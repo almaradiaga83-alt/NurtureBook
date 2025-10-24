@@ -158,7 +158,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }
       
       if (data.user) {
-        await loadUserProfile(data.user);
+        await loadUserProfile(data.user as any);
         return { success: true };
       }
       

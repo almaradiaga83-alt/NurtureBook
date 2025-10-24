@@ -111,6 +111,7 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
         {/* Header */}
         <View style={styles.header}>
           <Text style={styles.brandName}>NurtureBook</Text>
+          <Text style={styles.demoLabel}>Demo Mode - Use any details</Text>
           <Text style={styles.subtitle}>Create your account</Text>
         </View>
 
@@ -214,6 +215,17 @@ const styles = StyleSheet.create({
     color: colors.text.onPrimary,
     fontFamily: typography.fontFamily.display,
     marginBottom: spacing.sm,
+  },
+  demoLabel: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.secondary.main,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 12,
+    marginBottom: spacing.sm,
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: typography.fontSize.lg,

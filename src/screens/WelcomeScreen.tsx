@@ -41,6 +41,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header with app branding */}
       <View style={styles.header}>
         <Text style={styles.brandName}>NurtureBook</Text>
+        <Text style={styles.demoLabel}>Demo Mode</Text>
       </View>
 
       {/* Main content */}
@@ -92,6 +93,16 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.bold,
     color: colors.text.onPrimary,
     fontFamily: typography.fontFamily.display,
+  },
+  demoLabel: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.secondary.main,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 12,
+    marginTop: spacing.sm,
   },
   main: {
     flex: 1,

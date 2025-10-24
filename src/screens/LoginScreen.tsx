@@ -86,6 +86,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
         {/* Header with app branding */}
         <View style={styles.header}>
           <Text style={styles.brandName}>NurtureBook</Text>
+          <Text style={styles.demoLabel}>Demo Mode - Use any email/password</Text>
         </View>
 
         {/* Main content */}
@@ -185,6 +186,17 @@ const styles = StyleSheet.create({
     color: colors.text.light,
     fontFamily: typography.fontFamily.display,
   },
+  demoLabel: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.secondary.main,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: 12,
+    marginTop: spacing.sm,
+    textAlign: 'center',
+  },
   content: {
     maxWidth: 400,
     alignSelf: 'center',
@@ -222,8 +234,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary.main,
   },
   signUpButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'transparent',
+    borderColor: colors.secondary.main,
   },
 
   signUpLink: {
