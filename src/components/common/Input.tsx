@@ -35,7 +35,7 @@ const Input: React.FC<InputProps> = ({
 
   const getInputStyle = (): TextStyle => {
     return {
-      borderWidth: 1,
+      borderWidth: 2,
       borderColor: error ? colors.status.error : isFocused ? colors.primary.main : colors.border.light,
       borderRadius: borderRadius.lg,
       paddingHorizontal: spacing.lg,
@@ -44,6 +44,8 @@ const Input: React.FC<InputProps> = ({
       fontSize: typography.fontSize.base,
       fontFamily: typography.fontFamily.primary,
       color: colors.text.primary,
+      minHeight: 48,
+      ...shadows.sm,
     };
   };
 
@@ -51,8 +53,8 @@ const Input: React.FC<InputProps> = ({
     return {
       fontSize: typography.fontSize.base,
       fontFamily: typography.fontFamily.primary,
-      fontWeight: typography.fontWeight.medium,
-      color: colors.text.secondary,
+      fontWeight: typography.fontWeight.semibold,
+      color: colors.text.primary,
       marginBottom: spacing.sm,
     };
   };

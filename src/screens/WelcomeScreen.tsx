@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   brandName: {
     fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     fontFamily: typography.fontFamily.display,
   },
   main: {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: typography.fontSize['4xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     textAlign: 'center',
     lineHeight: typography.lineHeight.tight * typography.fontSize['4xl'],
     marginBottom: spacing.md,
@@ -165,9 +165,10 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.normal,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     textAlign: 'center',
     lineHeight: typography.lineHeight.normal * typography.fontSize.base,
+    opacity: 0.9,
   },
   buttonContainer: {
     width: '100%',
@@ -202,8 +203,9 @@ const styles = StyleSheet.create({
   featureText: {
     fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.medium,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     textAlign: 'center',
+    opacity: 0.9,
   },
 });
 

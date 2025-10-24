@@ -10,8 +10,9 @@ import {
   ViewStyle,
   TextStyle,
   ActivityIndicator,
+  Animated,
 } from 'react-native';
-import { colors, typography, borderRadius, spacing } from '../../theme';
+import { colors, typography, borderRadius, spacing, shadows } from '../../theme';
 
 interface ButtonProps {
   title: string;
@@ -34,12 +35,30 @@ const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
 }) => {
+  const scaleValue = React.useRef(new Animated.Value(1)).current;
+  
+  const handlePressIn = () => {
+    Animated.timing(scaleValue, {
+      toValue: 0.96,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+  
+  const handlePressOut = () => {
+    Animated.timing(scaleValue, {
+      toValue: 1,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
       borderRadius: borderRadius.lg,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
+      ...shadows.sm, // Add subtle shadow for depth
     };
 
     // Size styles
@@ -47,7 +66,7 @@ const Button: React.FC<ButtonProps> = ({
       small: {
         paddingHorizontal: spacing.lg,
         paddingVertical: spacing.sm,
-        minHeight: 36,
+        minHeight: 40,
       },
       medium: {
         paddingHorizontal: spacing.xl,
@@ -61,13 +80,15 @@ const Button: React.FC<ButtonProps> = ({
       },
     };
 
-    // Variant styles
+    // Variant styles with better contrast
     const variantStyles: Record<string, ViewStyle> = {
       primary: {
         backgroundColor: colors.primary.main,
+        ...shadows.md,
       },
       secondary: {
         backgroundColor: colors.secondary.main,
+        ...shadows.sm,
       },
       outline: {
         backgroundColor: 'transparent',
@@ -80,14 +101,14 @@ const Button: React.FC<ButtonProps> = ({
       ...baseStyle,
       ...sizeStyles[size],
       ...variantStyles[variant],
-      opacity: disabled ? 0.6 : 1,
+      opacity: disabled ? 0.5 : 1,
     };
   };
 
   const getTextStyle = (): TextStyle => {
     const baseStyle: TextStyle = {
       fontFamily: typography.fontFamily.primary,
-      fontWeight: typography.fontWeight.bold,
+      fontWeight: typography.fontWeight.semibold,
       textAlign: 'center',
     };
 
@@ -104,13 +125,13 @@ const Button: React.FC<ButtonProps> = ({
       },
     };
 
-    // Variant styles
+    // Variant styles with better contrast
     const variantStyles: Record<string, TextStyle> = {
       primary: {
-        color: colors.text.light,
+        color: colors.text.onPrimary,
       },
       secondary: {
-        color: colors.text.light,
+        color: colors.text.onSecondary,
       },
       outline: {
         color: colors.primary.main,
@@ -125,21 +146,25 @@ const Button: React.FC<ButtonProps> = ({
   };
 
   return (
-    <TouchableOpacity
-      style={[getButtonStyle(), style]}
-      onPress={onPress}
-      disabled={disabled || loading}
-      activeOpacity={0.8}
-    >
-      {loading ? (
-        <ActivityIndicator
-          size="small"
-          color={variant === 'outline' ? colors.primary.main : colors.text.light}
-        />
-      ) : (
-        <Text style={[getTextStyle(), textStyle]}>{title}</Text>
-      )}
-    </TouchableOpacity>
+    <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+      <TouchableOpacity
+        style={[getButtonStyle(), style]}
+        onPress={onPress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled || loading}
+        activeOpacity={0.9}
+      >
+        {loading ? (
+          <ActivityIndicator
+            size="small"
+            color={variant === 'outline' ? colors.primary.main : colors.text.onPrimary}
+          />
+        ) : (
+          <Text style={[getTextStyle(), textStyle]}>{title}</Text>
+        )}
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 

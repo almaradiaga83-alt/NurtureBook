@@ -218,12 +218,12 @@ const styles = StyleSheet.create({
   },
   headerIcon: {
     fontSize: 24,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
   },
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     flex: 1,
     textAlign: 'center',
   },
@@ -338,7 +338,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: typography.fontSize['2xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
+    color: colors.text.onPrimary,
     marginBottom: spacing.md,
     paddingHorizontal: spacing.lg,
   },

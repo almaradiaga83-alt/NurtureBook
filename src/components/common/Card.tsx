@@ -33,6 +33,8 @@ const Card: React.FC<CardProps> = ({
     borderRadius: borderRadius.lg,
     padding: spacing[padding],
     ...shadows[shadow],
+    borderWidth: 1,
+    borderColor: colors.border.light,
   };
 
   // If no onPress is provided, render as View instead of TouchableOpacity

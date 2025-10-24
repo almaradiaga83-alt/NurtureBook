@@ -6,35 +6,38 @@
 export const colors = {
   // Primary colors - Dark Green Pastel variants
   primary: {
-    main: '#3b5249',      // Main dark green pastel
-    light: '#4C8577',      // Lighter variant
-    lighter: '#6B8E23',    // Even lighter variant
-    dark: '#2a3b3d',       // Darker variant
+    main: '#2d4a3a',      // Darker green for better contrast
+    light: '#4a6b5a',     // Lighter variant
+    lighter: '#6b8e7a',   // Even lighter variant
+    dark: '#1a2e22',      // Darker variant
   },
   
   // Secondary colors - Pastel Pink variants
   secondary: {
-    main: '#f4c2c2',       // Main pastel pink
-    light: '#FFC0CB',      // Lighter variant
-    lighter: '#F7D9D9',    // Even lighter variant
-    dark: '#F3C6C6',       // Darker variant
+    main: '#e8a5a5',      // Slightly darker pink for better contrast
+    light: '#f2c2c2',     // Lighter variant
+    lighter: '#f7d9d9',   // Even lighter variant
+    dark: '#d48888',      // Darker variant
   },
   
   // Background colors
   background: {
-    light: '#f6f7f8',      // Light background
-    dark: '#101c22',       // Dark background
-    card: '#ffffff',       // Card background
-    cardDark: '#1a2e22',   // Dark card background
-    secondary: '#edf2f4',   // Secondary background
+    light: '#ffffff',     // Pure white for better contrast
+    dark: '#0f1419',      // Darker background
+    card: '#ffffff',      // Card background
+    cardDark: '#1a2e22',  // Dark card background
+    secondary: '#f8f9fa', // Light gray secondary background
+    surface: '#fafbfc',   // Surface color for elevated elements
   },
   
-  // Text colors
+  // Text colors - Improved contrast
   text: {
-    primary: '#111618',    // Primary text color
-    secondary: '#333333',  // Secondary text color
-    light: '#ffffff',      // Light text
-    muted: '#666666',      // Muted text
+    primary: '#1a1a1a',   // Darker primary text for better readability
+    secondary: '#4a4a4a', // Darker secondary text
+    light: '#ffffff',     // Light text
+    muted: '#6b7280',     // Better muted text color
+    onPrimary: '#ffffff', // Text on primary color backgrounds
+    onSecondary: '#1a1a1a', // Text on secondary color backgrounds
   },
   
   // Mood colors for journal entries
@@ -56,12 +59,22 @@ export const colors = {
   
   // Border colors
   border: {
-    light: '#e0e0e0',      // Light border
-    dark: '#333333',       // Dark border
+    light: '#e5e7eb',     // Light border with better contrast
+    medium: '#d1d5db',    // Medium border
+    dark: '#374151',      // Dark border
   },
   
   // Shadow colors
   shadow: 'rgba(0, 0, 0, 0.1)',
+  shadowDark: 'rgba(0, 0, 0, 0.25)',
+  
+  // Interactive states
+  interactive: {
+    hover: 'rgba(45, 74, 58, 0.08)',     // Hover state
+    pressed: 'rgba(45, 74, 58, 0.12)',   // Pressed state
+    focus: 'rgba(45, 74, 58, 0.16)',     // Focus state
+    disabled: 'rgba(107, 114, 128, 0.3)', // Disabled state
+  },
 } as const;
 
 export type ColorTheme = typeof colors;
