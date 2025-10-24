@@ -25,7 +25,9 @@ interface AuthContextType extends AuthState {
   signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
   signOut: () => Promise<void>;
+  logout: () => Promise<void>;
   updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: string }>;
+  updateUser: (updates: Partial<User>) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -68,7 +70,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Initialize auth state and listen for changes
   useEffect(() => {
-    initializeAuth();
+    const initialize = async () => {
+      try {
+        const { user } = await auth.getCurrentUser();
+        if (user) {
+          await loadUserProfile(user);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+      } finally {
+        dispatch({ type: 'SET_LOADING', payload: false });
+      }
+    };
+
+    initialize();
     
     // Listen for auth state changes
     const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
@@ -85,18 +100,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     };
   }, []);
 
-  const initializeAuth = async () => {
-    try {
-      const { user } = await auth.getCurrentUser();
-      if (user) {
-        await loadUserProfile(user);
-      }
-    } catch (error) {
-      console.error('Error initializing auth:', error);
-    } finally {
-      dispatch({ type: 'SET_LOADING', payload: false });
-    }
-  };
+
 
   const loadUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
@@ -112,25 +116,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         
         const { data: createdProfile } = await db.updateProfile(supabaseUser.id, newProfile);
         if (createdProfile) {
+          const profileData = createdProfile as any;
           const user: User = {
-            id: createdProfile.id,
-            email: createdProfile.email,
-            name: createdProfile.name,
-            profileImage: createdProfile.profile_image,
+            id: profileData.id,
+            email: profileData.email,
+            name: profileData.name,
+            profileImage: profileData.profile_image,
             isGuest: false,
-            createdAt: new Date(createdProfile.created_at),
+            createdAt: new Date(profileData.created_at),
             children: [],
           };
           dispatch({ type: 'SET_USER', payload: { user, supabaseUser } });
         }
       } else if (profile) {
+        const profileData = profile as any;
         const user: User = {
-          id: profile.id,
-          email: profile.email,
-          name: profile.name,
-          profileImage: profile.profile_image,
+          id: profileData.id,
+          email: profileData.email,
+          name: profileData.name,
+          profileImage: profileData.profile_image,
           isGuest: false,
-          createdAt: new Date(profile.created_at),
+          createdAt: new Date(profileData.created_at),
           children: [],
         };
         dispatch({ type: 'SET_USER', payload: { user, supabaseUser } });
@@ -228,7 +234,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     signIn,
     signUp,
     signOut,
+    logout: signOut, // Alias for signOut
     updateProfile,
+    updateUser: updateProfile, // Alias for updateProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

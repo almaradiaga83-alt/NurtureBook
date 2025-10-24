@@ -46,7 +46,7 @@ const AddChoreScreen: React.FC<Props> = ({ navigation }) => {
       newErrors.title = 'Title is required';
     }
 
-    const pointsNum = parseInt(points);
+    const pointsNum = parseInt(points, 10);
     if (!points || isNaN(pointsNum) || pointsNum < 1 || pointsNum > 100) {
       newErrors.points = 'Please enter valid points (1-100)';
     }
@@ -66,7 +66,7 @@ const AddChoreScreen: React.FC<Props> = ({ navigation }) => {
     setErrors({});
 
     try {
-      await addChore(title.trim(), parseInt(points), selectedChild);
+      await addChore(title.trim(), parseInt(points, 10), selectedChild);
       
       Alert.alert(
         'Success!',

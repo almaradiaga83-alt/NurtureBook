@@ -4,7 +4,6 @@
  */
 
 import { AIInsight, JournalEntry, MoodType } from '../types';
-import { mockAIInsights } from './mockData';
 
 /**
  * Simulates an async API call to generate AI insights
@@ -94,7 +93,7 @@ export const generateAIInsights = async (journalEntries: JournalEntry[]): Promis
   
   // Return mock insights if no patterns found
   if (insights.length === 0) {
-    return mockAIInsights;
+    return await getMockInsights();
   }
   
   return insights;
@@ -121,5 +120,42 @@ const getMoodInsight = (mood: MoodType, percentage: number): string => {
 export const getMockInsights = async (): Promise<AIInsight[]> => {
   // Simulate API delay
   await new Promise<void>(resolve => setTimeout(resolve, 1000));
-  return mockAIInsights;
+  
+  const mockInsights: AIInsight[] = [
+    {
+      id: 'mock-insight-1',
+      title: 'Weekly Mood Pattern',
+      description: 'You\'ve been feeling calm and balanced this week. This is great for maintaining patience with your children.',
+      type: 'pattern',
+      dateRange: {
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        end: new Date(),
+      },
+      createdAt: new Date(),
+    },
+    {
+      id: 'mock-insight-2',
+      title: 'Parenting Milestone',
+      description: 'Your consistent journaling shows dedication to self-reflection and growth as a parent.',
+      type: 'milestone',
+      dateRange: {
+        start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+        end: new Date(),
+      },
+      createdAt: new Date(),
+    },
+    {
+      id: 'mock-insight-3',
+      title: 'Self-Care Suggestion',
+      description: 'Consider scheduling some "me time" this weekend. Your journal entries suggest you could benefit from relaxation.',
+      type: 'suggestion',
+      dateRange: {
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        end: new Date(),
+      },
+      createdAt: new Date(),
+    },
+  ];
+  
+  return mockInsights;
 };

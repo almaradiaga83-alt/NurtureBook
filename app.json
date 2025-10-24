@@ -31,7 +31,9 @@
     "extra": {
       "eas": {
         "projectId": "nurturebook-demo"
-      }
+      },
+      "supabaseUrl": "https://your-project.supabase.co",
+      "supabaseAnonKey": "your-anon-key"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

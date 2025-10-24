@@ -20,7 +20,7 @@ import Card from '../components/common/Card';
 import Button from '../components/common/Button';
 import { useJournal } from '../contexts/JournalContext';
 import { useLocale } from '../contexts/LocaleContext';
-import { moodColors } from '../services/mockData';
+import { moodColors } from '../constants/moods';
 
 type JournalDashboardNavigationProp = StackNavigationProp<JournalStackParamList, 'JournalDashboard'>;
 

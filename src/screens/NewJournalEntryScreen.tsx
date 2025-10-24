@@ -21,7 +21,7 @@ import { colors, typography, spacing } from '../theme';
 import Button from '../components/common/Button';
 import { useJournal } from '../contexts/JournalContext';
 import { useLocale } from '../contexts/LocaleContext';
-import { moodEmojis } from '../services/mockData';
+import { moodEmojis } from '../constants/moods';
 
 type NewJournalEntryNavigationProp = StackNavigationProp<JournalStackParamList, 'NewJournalEntry'>;
 

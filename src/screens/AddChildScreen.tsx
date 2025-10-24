@@ -44,7 +44,7 @@ const AddChildScreen: React.FC<Props> = ({ navigation }) => {
       newErrors.name = 'Name is required';
     }
 
-    const ageNum = parseInt(age);
+    const ageNum = parseInt(age, 10);
     if (!age || isNaN(ageNum) || ageNum < 1 || ageNum > 18) {
       newErrors.age = 'Please enter a valid age (1-18)';
     }
@@ -60,7 +60,7 @@ const AddChildScreen: React.FC<Props> = ({ navigation }) => {
     setErrors({});
 
     try {
-      await addChild(name.trim(), parseInt(age));
+      await addChild(name.trim(), parseInt(age, 10));
       
       Alert.alert(
         'Success!',

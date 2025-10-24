@@ -316,7 +316,7 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
       // Update chore completion status
       const choreUpdates = {
         completed: false,
-        completed_at: null,
+        completed_at: undefined,
         updated_at: new Date().toISOString(),
       };
 

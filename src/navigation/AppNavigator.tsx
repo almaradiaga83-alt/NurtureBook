@@ -7,7 +7,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 // Import screens
 import WelcomeScreen from '../screens/WelcomeScreen';
@@ -144,19 +144,19 @@ const ProfileStackNavigator = () => {
 
 // Main Tab Navigator
 const getTabBarIcon = (routeName: string, color: string, size: number) => {
-  let iconName: string;
+  let iconName: keyof typeof MaterialIcons.glyphMap;
 
   if (routeName === 'Journal') {
-    iconName = 'edit_calendar';
+    iconName = 'book';
   } else if (routeName === 'Family') {
-    iconName = 'checklist';
+    iconName = 'home';
   } else if (routeName === 'Profile') {
     iconName = 'person';
   } else {
     iconName = 'help';
   }
 
-  return <Icon name={iconName} size={size} color={color} />;
+  return <MaterialIcons name={iconName} size={size} color={color} />;
 };
 
 const MainTabNavigator = () => {
