@@ -9,16 +9,23 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// Import screens (will be created)
+// Import screens
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 import JournalDashboardScreen from '../screens/JournalDashboardScreen';
 import NewJournalEntryScreen from '../screens/NewJournalEntryScreen';
 import AIInsightsScreen from '../screens/AIInsightsScreen';
 import ChoresListScreen from '../screens/ChoresListScreen';
 import ChildProfileScreen from '../screens/ChildProfileScreen';
+import AddChildScreen from '../screens/AddChildScreen';
+import AddChoreScreen from '../screens/AddChoreScreen';
 import ParentProfileScreen from '../screens/ParentProfileScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import LoadingScreen from '../components/common/LoadingScreen';
+
+// Import contexts
+import { useAuth } from '../contexts/AuthContext';
 
 // Import types
 import {
@@ -93,6 +100,16 @@ const FamilyStackNavigator = () => {
         component={ChildProfileScreen}
         options={{ title: 'Dashboard' }}
       />
+      <FamilyStack.Screen
+        name="AddChild"
+        component={AddChildScreen}
+        options={{ headerShown: false }}
+      />
+      <FamilyStack.Screen
+        name="AddChore"
+        component={AddChoreScreen}
+        options={{ headerShown: false }}
+      />
     </FamilyStack.Navigator>
   );
 };
@@ -165,15 +182,27 @@ const MainTabNavigator = () => {
 
 // Root Stack Navigator
 const RootStackNavigator = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <LoadingScreen message="Loading NurtureBook..." />;
+  }
+
   return (
     <RootStack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <RootStack.Screen name="Welcome" component={WelcomeScreen} />
-      <RootStack.Screen name="Login" component={LoginScreen} />
-      <RootStack.Screen name="MainApp" component={MainTabNavigator} />
+      {isAuthenticated ? (
+        <RootStack.Screen name="MainApp" component={MainTabNavigator} />
+      ) : (
+        <>
+          <RootStack.Screen name="Welcome" component={WelcomeScreen} />
+          <RootStack.Screen name="Login" component={LoginScreen} />
+          <RootStack.Screen name="SignUp" component={SignUpScreen} />
+        </>
+      )}
     </RootStack.Navigator>
   );
 };

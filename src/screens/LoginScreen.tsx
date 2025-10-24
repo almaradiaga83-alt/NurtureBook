@@ -33,7 +33,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const { login, loginAsGuest } = useAuth();
+  const { signIn } = useAuth();
   const { t } = useLocale();
 
   const handleLogin = async () => {
@@ -46,11 +46,11 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
     setError('');
 
     try {
-      const success = await login(email, password);
+      const { success, error: authError } = await signIn(email, password);
       if (success) {
         navigation.navigate('MainApp');
       } else {
-        setError('Invalid email or password');
+        setError(authError || 'Invalid email or password');
       }
     } catch {
       setError('Login failed. Please try again.');
@@ -60,22 +60,12 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleSignUp = () => {
-    // For demo purposes, just show an alert
-    setError('Sign up functionality not implemented in demo');
+    navigation.navigate('SignUp');
   };
 
   const handleGuestLogin = async () => {
-    setIsLoading(true);
-    setError('');
-
-    try {
-      await loginAsGuest();
-      navigation.navigate('MainApp');
-    } catch {
-      setError('Guest login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
+    // For now, redirect to sign up - we'll implement demo mode later if needed
+    navigation.navigate('SignUp');
   };
 
   const handleForgotPassword = () => {
@@ -152,14 +142,12 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
 
 
-            {/* Guest login */}
-            <Button
-              title={t('login.continueAsGuest')}
-              onPress={handleGuestLogin}
-              variant="outline"
-              size="large"
-              style={styles.guestButton}
-            />
+            {/* Sign up link */}
+            <TouchableOpacity onPress={handleSignUp} style={styles.signUpLink}>
+              <Text style={styles.signUpLinkText}>
+                Don't have an account? <Text style={styles.signUpLinkBold}>Sign Up</Text>
+              </Text>
+            </TouchableOpacity>
 
             {/* Terms */}
             <Text style={styles.termsText}>
@@ -238,9 +226,18 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
 
-  guestButton: {
-    borderColor: colors.text.muted,
+  signUpLink: {
+    alignItems: 'center',
     marginTop: spacing.lg,
+  },
+  signUpLinkText: {
+    fontSize: typography.fontSize.base,
+    color: colors.text.onPrimary,
+    opacity: 0.9,
+  },
+  signUpLinkBold: {
+    fontWeight: typography.fontWeight.bold,
+    color: colors.secondary.main,
   },
   termsText: {
     fontSize: typography.fontSize.sm,

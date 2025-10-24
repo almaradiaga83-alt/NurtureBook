@@ -66,6 +66,12 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>My Garden</Text>
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => navigation.navigate('AddChore')}
+        >
+          <Text style={styles.addButtonText}>+ Chore</Text>
+        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -130,6 +136,17 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
               </View>
             </Card>
           ))}
+          
+          {/* Add Child Button */}
+          <TouchableOpacity 
+            style={styles.addChildCard}
+            onPress={() => navigation.navigate('AddChild')}
+          >
+            <View style={styles.addChildContent}>
+              <Text style={styles.addChildIcon}>+</Text>
+              <Text style={styles.addChildText}>Add Child</Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Chores List */}
@@ -240,7 +257,18 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.text.primary,
-    textAlign: 'center',
+    flex: 1,
+  },
+  addButton: {
+    backgroundColor: colors.primary.main,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: 20,
+  },
+  addButtonText: {
+    fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.text.onPrimary,
   },
   content: {
     flex: 1,
@@ -441,6 +469,31 @@ const styles = StyleSheet.create({
   progressStatLabel: {
     fontSize: typography.fontSize.sm,
     color: colors.text.secondary,
+  },
+  addChildCard: {
+    backgroundColor: colors.background.surface,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: colors.primary.main,
+    padding: spacing.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 80,
+  },
+  addChildContent: {
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  addChildIcon: {
+    fontSize: 24,
+    color: colors.primary.main,
+    fontWeight: typography.fontWeight.bold,
+  },
+  addChildText: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.medium,
+    color: colors.primary.main,
   },
 });
 

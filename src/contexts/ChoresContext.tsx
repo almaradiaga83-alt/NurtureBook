@@ -1,12 +1,12 @@
 /**
  * Chores Context
- * Manages chores, children, and points system
+ * Manages chores, children, and points system with Supabase
  */
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { Chore, Child } from '../types';
-import { storage } from '../services/storage';
-import { mockChores, mockChildren } from '../services/mockData';
+import { db, subscriptions } from '../config/supabase';
+import { useAuth } from './AuthContext';
 
 interface ChoresState {
   chores: Chore[];
@@ -27,6 +27,7 @@ type ChoresAction =
 
 interface ChoresContextType extends ChoresState {
   addChore: (title: string, points: number, assignedTo: string, dueDate?: Date) => Promise<void>;
+  addChild: (name: string, age: number) => Promise<void>;
   updateChore: (id: string, updates: Partial<Chore>) => Promise<void>;
   deleteChore: (id: string) => Promise<void>;
   completeChore: (choreId: string) => Promise<void>;
@@ -92,66 +93,129 @@ const choresReducer = (state: ChoresState, action: ChoresAction): ChoresState =>
 
 export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: childrenNode }) => {
   const [state, dispatch] = useReducer(choresReducer, initialState);
+  const { user, isAuthenticated } = useAuth();
 
-  // Load data on mount
+  // Load data when user is authenticated
   useEffect(() => {
-    loadData();
-  }, []);
+    if (isAuthenticated && user) {
+      loadData();
+      
+      // Set up real-time subscription for chores
+      const choreSubscription = subscriptions.chores(user.id, (payload) => {
+        const { eventType, new: newRecord, old: oldRecord } = payload;
+        
+        switch (eventType) {
+          case 'INSERT':
+            if (newRecord) {
+              const chore = convertDbChoreToChore(newRecord);
+              dispatch({ type: 'ADD_CHORE', payload: chore });
+            }
+            break;
+          case 'UPDATE':
+            if (newRecord) {
+              const chore = convertDbChoreToChore(newRecord);
+              dispatch({ type: 'UPDATE_CHORE', payload: chore });
+            }
+            break;
+          case 'DELETE':
+            if (oldRecord) {
+              dispatch({ type: 'DELETE_CHORE', payload: oldRecord.id });
+            }
+            break;
+        }
+      });
+
+      return () => {
+        choreSubscription.unsubscribe();
+      };
+    } else {
+      // Clear data when user logs out
+      dispatch({ type: 'SET_CHORES', payload: [] });
+      dispatch({ type: 'SET_CHILDREN', payload: [] });
+    }
+  }, [isAuthenticated, user]);
+
+  const convertDbChoreToChore = (dbChore: any): Chore => ({
+    id: dbChore.id,
+    title: dbChore.title,
+    description: dbChore.description,
+    points: dbChore.points,
+    assignedTo: dbChore.assigned_to,
+    dueDate: dbChore.due_date ? new Date(dbChore.due_date) : undefined,
+    completed: dbChore.completed,
+    completedAt: dbChore.completed_at ? new Date(dbChore.completed_at) : undefined,
+    createdBy: dbChore.created_by,
+    createdAt: new Date(dbChore.created_at),
+  });
+
+  const convertDbChildToChild = (dbChild: any): Child => ({
+    id: dbChild.id,
+    name: dbChild.name,
+    age: dbChild.age,
+    profileImage: dbChild.profile_image,
+    totalPoints: dbChild.total_points,
+    parentId: dbChild.parent_id,
+    createdAt: new Date(dbChild.created_at),
+  });
 
   const loadData = async () => {
+    if (!user) return;
+    
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
       
       // Load chores
-      const storedChores = await storage.getChores();
-      if (storedChores && Array.isArray(storedChores) && storedChores.length > 0) {
-        const chores = storedChores.map((chore: any) => ({
-          ...chore,
-          dueDate: chore.dueDate ? new Date(chore.dueDate) : undefined,
-          completedAt: chore.completedAt ? new Date(chore.completedAt) : undefined,
-          createdAt: new Date(chore.createdAt),
-        }));
-        dispatch({ type: 'SET_CHORES', payload: chores });
+      const { data: choresData, error: choresError } = await db.getChores(user.id);
+      if (choresError) {
+        dispatch({ type: 'SET_ERROR', payload: choresError.message });
       } else {
-        dispatch({ type: 'SET_CHORES', payload: mockChores });
-        await storage.storeChores(mockChores);
+        const chores = choresData?.map(convertDbChoreToChore) || [];
+        dispatch({ type: 'SET_CHORES', payload: chores });
       }
 
       // Load children
-      const storedChildren = await storage.getChildren();
-      if (storedChildren && Array.isArray(storedChildren) && storedChildren.length > 0) {
-        const children = storedChildren.map((child: any) => ({
-          ...child,
-          createdAt: new Date(child.createdAt),
-        }));
-        dispatch({ type: 'SET_CHILDREN', payload: children });
+      const { data: childrenData, error: childrenError } = await db.getChildren(user.id);
+      if (childrenError) {
+        dispatch({ type: 'SET_ERROR', payload: childrenError.message });
       } else {
-        dispatch({ type: 'SET_CHILDREN', payload: mockChildren });
-        await storage.storeChildren(mockChildren);
+        const children = childrenData?.map(convertDbChildToChild) || [];
+        dispatch({ type: 'SET_CHILDREN', payload: children });
       }
     } catch (error) {
       console.error('Error loading chores data:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to load chores data' });
+    } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
   const addChore = async (title: string, points: number, assignedTo: string, dueDate?: Date): Promise<void> => {
+    if (!user) {
+      dispatch({ type: 'SET_ERROR', payload: 'User not authenticated' });
+      return;
+    }
+
     try {
-      const newChore: Chore = {
-        id: `chore-${Date.now()}`,
+      const choreData = {
         title,
         points,
-        assignedTo,
-        dueDate,
+        assigned_to: assignedTo,
+        due_date: dueDate?.toISOString(),
         completed: false,
-        createdBy: 'parent-1', // This would come from auth context
-        createdAt: new Date(),
+        created_by: user.id,
       };
 
-      const updatedChores = [...state.chores, newChore];
-      await storage.storeChores(updatedChores);
-      dispatch({ type: 'ADD_CHORE', payload: newChore });
+      const { data, error } = await db.createChore(choreData);
+      
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      if (data) {
+        const chore = convertDbChoreToChore(data);
+        dispatch({ type: 'ADD_CHORE', payload: chore });
+      }
     } catch (error) {
       console.error('Error adding chore:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to add chore' });
@@ -160,17 +224,28 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
 
   const updateChore = async (id: string, updates: Partial<Chore>): Promise<void> => {
     try {
-      const updatedChore: Chore = {
-        ...state.chores.find(chore => chore.id === id)!,
-        ...updates,
+      const dbUpdates = {
+        title: updates.title,
+        description: updates.description,
+        points: updates.points,
+        assigned_to: updates.assignedTo,
+        due_date: updates.dueDate?.toISOString(),
+        completed: updates.completed,
+        completed_at: updates.completedAt?.toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
-      const updatedChores = state.chores.map(chore =>
-        chore.id === id ? updatedChore : chore
-      );
+      const { data, error } = await db.updateChore(id, dbUpdates);
       
-      await storage.storeChores(updatedChores);
-      dispatch({ type: 'UPDATE_CHORE', payload: updatedChore });
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      if (data) {
+        const chore = convertDbChoreToChore(data);
+        dispatch({ type: 'UPDATE_CHORE', payload: chore });
+      }
     } catch (error) {
       console.error('Error updating chore:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to update chore' });
@@ -179,8 +254,13 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
 
   const deleteChore = async (id: string): Promise<void> => {
     try {
-      const updatedChores = state.chores.filter(chore => chore.id !== id);
-      await storage.storeChores(updatedChores);
+      const { error } = await db.deleteChore(id);
+      
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
       dispatch({ type: 'DELETE_CHORE', payload: id });
     } catch (error) {
       console.error('Error deleting chore:', error);
@@ -193,26 +273,34 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
       const chore = state.chores.find(c => c.id === choreId);
       if (!chore) return;
 
-      const updatedChore: Chore = {
-        ...chore,
+      // Update chore completion status
+      const choreUpdates = {
         completed: true,
-        completedAt: new Date(),
+        completed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       };
 
-      const updatedChores = state.chores.map(c =>
-        c.id === choreId ? updatedChore : c
-      );
+      const { error: choreError } = await db.updateChore(choreId, choreUpdates);
+      if (choreError) {
+        dispatch({ type: 'SET_ERROR', payload: choreError.message });
+        return;
+      }
 
       // Update child points
-      const updatedChildren = state.children.map(child =>
-        child.id === chore.assignedTo
-          ? { ...child, totalPoints: child.totalPoints + chore.points }
-          : child
-      );
+      const child = state.children.find(c => c.id === chore.assignedTo);
+      if (child) {
+        const childUpdates = {
+          total_points: child.totalPoints + chore.points,
+        };
 
-      await storage.storeChores(updatedChores);
-      await storage.storeChildren(updatedChildren);
-      
+        const { error: childError } = await db.updateChild(child.id, childUpdates);
+        if (childError) {
+          dispatch({ type: 'SET_ERROR', payload: childError.message });
+          return;
+        }
+      }
+
+      // Update local state
       dispatch({ type: 'COMPLETE_CHORE', payload: { choreId, childId: chore.assignedTo } });
     } catch (error) {
       console.error('Error completing chore:', error);
@@ -225,25 +313,40 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
       const chore = state.chores.find(c => c.id === choreId);
       if (!chore) return;
 
-      const updatedChore: Chore = {
-        ...chore,
+      // Update chore completion status
+      const choreUpdates = {
         completed: false,
-        completedAt: undefined,
+        completed_at: null,
+        updated_at: new Date().toISOString(),
       };
 
-      const updatedChores = state.chores.map(c =>
-        c.id === choreId ? updatedChore : c
-      );
+      const { error: choreError } = await db.updateChore(choreId, choreUpdates);
+      if (choreError) {
+        dispatch({ type: 'SET_ERROR', payload: choreError.message });
+        return;
+      }
 
-      // Subtract points from child
-      const updatedChildren = state.children.map(child =>
-        child.id === chore.assignedTo
-          ? { ...child, totalPoints: Math.max(0, child.totalPoints - chore.points) }
-          : child
-      );
+      // Update child points
+      const child = state.children.find(c => c.id === chore.assignedTo);
+      if (child) {
+        const childUpdates = {
+          total_points: Math.max(0, child.totalPoints - chore.points),
+        };
 
-      await storage.storeChores(updatedChores);
-      await storage.storeChildren(updatedChildren);
+        const { error: childError } = await db.updateChild(child.id, childUpdates);
+        if (childError) {
+          dispatch({ type: 'SET_ERROR', payload: childError.message });
+          return;
+        }
+      }
+
+      // Update local state
+      const updatedChore = { ...chore, completed: false, completedAt: undefined };
+      const updatedChildren = state.children.map(c =>
+        c.id === chore.assignedTo
+          ? { ...c, totalPoints: Math.max(0, c.totalPoints - chore.points) }
+          : c
+      );
       
       dispatch({ type: 'UPDATE_CHORE', payload: updatedChore });
       dispatch({ type: 'SET_CHILDREN', payload: updatedChildren });
@@ -267,12 +370,20 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
 
   const updateChildPoints = async (childId: string, points: number): Promise<void> => {
     try {
-      const updatedChildren = state.children.map(child =>
-        child.id === childId ? { ...child, totalPoints: points } : child
-      );
+      const { data, error } = await db.updateChild(childId, { total_points: points });
       
-      await storage.storeChildren(updatedChildren);
-      dispatch({ type: 'SET_CHILDREN', payload: updatedChildren });
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      if (data) {
+        const child = convertDbChildToChild(data);
+        const updatedChildren = state.children.map(c =>
+          c.id === childId ? child : c
+        );
+        dispatch({ type: 'SET_CHILDREN', payload: updatedChildren });
+      }
     } catch (error) {
       console.error('Error updating child points:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to update child points' });
@@ -283,9 +394,41 @@ export const ChoresProvider: React.FC<{ children: ReactNode }> = ({ children: ch
     await loadData();
   };
 
+  const addChild = async (name: string, age: number): Promise<void> => {
+    if (!user) {
+      dispatch({ type: 'SET_ERROR', payload: 'User not authenticated' });
+      return;
+    }
+
+    try {
+      const childData = {
+        name,
+        age,
+        total_points: 0,
+        parent_id: user.id,
+      };
+
+      const { data, error } = await db.createChild(childData);
+      
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      if (data) {
+        const child = convertDbChildToChild(data);
+        dispatch({ type: 'SET_CHILDREN', payload: [...state.children, child] });
+      }
+    } catch (error) {
+      console.error('Error adding child:', error);
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to add child' });
+    }
+  };
+
   const value: ChoresContextType = {
     ...state,
     addChore,
+    addChild,
     updateChore,
     deleteChore,
     completeChore,

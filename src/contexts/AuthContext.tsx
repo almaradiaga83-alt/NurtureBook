@@ -1,38 +1,40 @@
 /**
  * Authentication Context
- * Manages user session and authentication state
+ * Manages user session and authentication state with Supabase
  */
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { User } from '../types';
-import { storage } from '../services/storage';
-import { mockParent } from '../services/mockData';
+import { auth, db } from '../config/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface AuthState {
   user: User | null;
+  supabaseUser: SupabaseUser | null;
   isLoading: boolean;
-  isGuest: boolean;
+  isAuthenticated: boolean;
 }
 
 type AuthAction =
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_USER'; payload: User }
-  | { type: 'SET_GUEST'; payload: boolean }
+  | { type: 'SET_USER'; payload: { user: User; supabaseUser: SupabaseUser } }
+  | { type: 'SET_AUTHENTICATED'; payload: boolean }
   | { type: 'LOGOUT' };
 
 interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<boolean>;
-  loginAsGuest: () => Promise<void>;
-  logout: () => Promise<void>;
-  updateUser: (user: Partial<User>) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signUp: (email: string, password: string, name: string) => Promise<{ success: boolean; error?: string }>;
+  signOut: () => Promise<void>;
+  updateProfile: (updates: Partial<User>) => Promise<{ success: boolean; error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const initialState: AuthState = {
   user: null,
+  supabaseUser: null,
   isLoading: true,
-  isGuest: false,
+  isAuthenticated: false,
 };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
@@ -40,11 +42,22 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };
     case 'SET_USER':
-      return { ...state, user: action.payload, isLoading: false, isGuest: false };
-    case 'SET_GUEST':
-      return { ...state, isGuest: action.payload, isLoading: false };
+      return { 
+        ...state, 
+        user: action.payload.user, 
+        supabaseUser: action.payload.supabaseUser,
+        isLoading: false, 
+        isAuthenticated: true 
+      };
+    case 'SET_AUTHENTICATED':
+      return { ...state, isAuthenticated: action.payload };
     case 'LOGOUT':
-      return { ...state, user: null, isGuest: false };
+      return { 
+        ...state, 
+        user: null, 
+        supabaseUser: null, 
+        isAuthenticated: false 
+      };
     default:
       return state;
   }
@@ -53,93 +66,169 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Load user session on app start
+  // Initialize auth state and listen for changes
   useEffect(() => {
-    loadUserSession();
+    initializeAuth();
+    
+    // Listen for auth state changes
+    const { data: { subscription } } = auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        await loadUserProfile(session.user);
+      } else {
+        dispatch({ type: 'LOGOUT' });
+      }
+      dispatch({ type: 'SET_LOADING', payload: false });
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const loadUserSession = async () => {
+  const initializeAuth = async () => {
     try {
-      const session = await storage.getUserSession();
-      if (session && typeof session === 'object' && 'id' in session) {
-        dispatch({ type: 'SET_USER', payload: session as User });
-      } else {
-        dispatch({ type: 'SET_LOADING', payload: false });
+      const { user } = await auth.getCurrentUser();
+      if (user) {
+        await loadUserProfile(user);
       }
     } catch (error) {
-      console.error('Error loading user session:', error);
+      console.error('Error initializing auth:', error);
+    } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    dispatch({ type: 'SET_LOADING', payload: true });
-    
+  const loadUserProfile = async (supabaseUser: SupabaseUser) => {
     try {
-      // Mock login validation
-      if (email && password) {
-        const user: User = {
-          id: 'user-1',
-          email,
-          name: email.split('@')[0],
-          isGuest: false,
-          createdAt: new Date(),
-          children: [], // Add required children property
+      const { data: profile, error } = await db.getProfile(supabaseUser.id);
+      
+      if (error && error.code === 'PGRST116') {
+        // Profile doesn't exist, create one
+        const newProfile = {
+          id: supabaseUser.id,
+          email: supabaseUser.email || '',
+          name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
         };
         
-        await storage.storeUserSession(user);
-        dispatch({ type: 'SET_USER', payload: user });
-        return true;
+        const { data: createdProfile } = await db.updateProfile(supabaseUser.id, newProfile);
+        if (createdProfile) {
+          const user: User = {
+            id: createdProfile.id,
+            email: createdProfile.email,
+            name: createdProfile.name,
+            profileImage: createdProfile.profile_image,
+            isGuest: false,
+            createdAt: new Date(createdProfile.created_at),
+            children: [],
+          };
+          dispatch({ type: 'SET_USER', payload: { user, supabaseUser } });
+        }
+      } else if (profile) {
+        const user: User = {
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          profileImage: profile.profile_image,
+          isGuest: false,
+          createdAt: new Date(profile.created_at),
+          children: [],
+        };
+        dispatch({ type: 'SET_USER', payload: { user, supabaseUser } });
       }
-      return false;
     } catch (error) {
-      console.error('Login error:', error);
-      dispatch({ type: 'SET_LOADING', payload: false });
-      return false;
+      console.error('Error loading user profile:', error);
     }
   };
 
-  const loginAsGuest = async (): Promise<void> => {
+  const signIn = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     dispatch({ type: 'SET_LOADING', payload: true });
     
     try {
-      // Set guest user with mock data
-      await storage.storeUserSession(mockParent);
-      dispatch({ type: 'SET_USER', payload: mockParent });
-      dispatch({ type: 'SET_GUEST', payload: true });
+      const { data, error } = await auth.signIn(email, password);
+      
+      if (error) {
+        dispatch({ type: 'SET_LOADING', payload: false });
+        return { success: false, error: error.message };
+      }
+      
+      if (data.user) {
+        await loadUserProfile(data.user);
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Login failed' };
     } catch (error) {
-      console.error('Guest login error:', error);
       dispatch({ type: 'SET_LOADING', payload: false });
+      return { success: false, error: 'An unexpected error occurred' };
     }
   };
 
-  const logout = async (): Promise<void> => {
-    try {
-      await storage.clearUserSession();
-      dispatch({ type: 'LOGOUT' });
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
-  };
-
-  const updateUser = async (userUpdates: Partial<User>): Promise<void> => {
-    if (!state.user) return;
+  const signUp = async (email: string, password: string, name: string): Promise<{ success: boolean; error?: string }> => {
+    dispatch({ type: 'SET_LOADING', payload: true });
     
     try {
-      const updatedUser = { ...state.user, ...userUpdates };
-      await storage.storeUserSession(updatedUser);
-      dispatch({ type: 'SET_USER', payload: updatedUser });
+      const { data, error } = await auth.signUp(email, password, { name });
+      
+      if (error) {
+        dispatch({ type: 'SET_LOADING', payload: false });
+        return { success: false, error: error.message };
+      }
+      
+      if (data.user) {
+        // Profile will be created automatically when auth state changes
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Sign up failed' };
     } catch (error) {
-      console.error('Update user error:', error);
+      dispatch({ type: 'SET_LOADING', payload: false });
+      return { success: false, error: 'An unexpected error occurred' };
+    }
+  };
+
+  const signOut = async (): Promise<void> => {
+    try {
+      await auth.signOut();
+      dispatch({ type: 'LOGOUT' });
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
+  const updateProfile = async (updates: Partial<User>): Promise<{ success: boolean; error?: string }> => {
+    if (!state.user) return { success: false, error: 'No user logged in' };
+    
+    try {
+      const { data, error } = await db.updateProfile(state.user.id, {
+        name: updates.name,
+        profile_image: updates.profileImage,
+      });
+      
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      
+      if (data && state.supabaseUser) {
+        const updatedUser: User = {
+          ...state.user,
+          ...updates,
+        };
+        dispatch({ type: 'SET_USER', payload: { user: updatedUser, supabaseUser: state.supabaseUser } });
+        return { success: true };
+      }
+      
+      return { success: false, error: 'Update failed' };
+    } catch (error) {
+      return { success: false, error: 'An unexpected error occurred' };
     }
   };
 
   const value: AuthContextType = {
     ...state,
-    login,
-    loginAsGuest,
-    logout,
-    updateUser,
+    signIn,
+    signUp,
+    signOut,
+    updateProfile,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

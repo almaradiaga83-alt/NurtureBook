@@ -71,6 +71,7 @@ export interface AIInsight {
 export type RootStackParamList = {
   Welcome: undefined;
   Login: undefined;
+  SignUp: undefined;
   MainApp: undefined;
 };
 
@@ -89,6 +90,8 @@ export type JournalStackParamList = {
 export type FamilyStackParamList = {
   ChoresList: undefined;
   ChildProfile: { childId: string };
+  AddChild: undefined;
+  AddChore: undefined;
 };
 
 export type ProfileStackParamList = {

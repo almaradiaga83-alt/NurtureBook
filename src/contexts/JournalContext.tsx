@@ -1,12 +1,12 @@
 /**
  * Journal Context
- * Manages journal entries and related operations
+ * Manages journal entries with Supabase backend
  */
 
 import React, { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
 import { JournalEntry, MoodType } from '../types';
-import { storage } from '../services/storage';
-import { mockJournalEntries } from '../services/mockData';
+import { db, subscriptions } from '../config/supabase';
+import { useAuth } from './AuthContext';
 
 interface JournalState {
   entries: JournalEntry[];
@@ -68,53 +68,106 @@ const journalReducer = (state: JournalState, action: JournalAction): JournalStat
 
 export const JournalProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [state, dispatch] = useReducer(journalReducer, initialState);
+  const { user, isAuthenticated } = useAuth();
 
-  // Load journal entries on mount
+  // Load journal entries when user is authenticated
   useEffect(() => {
-    loadEntries();
-  }, []);
+    if (isAuthenticated && user) {
+      loadEntries();
+      
+      // Set up real-time subscription
+      const subscription = subscriptions.journalEntries(user.id, (payload) => {
+        const { eventType, new: newRecord, old: oldRecord } = payload;
+        
+        switch (eventType) {
+          case 'INSERT':
+            if (newRecord) {
+              const entry = convertDbEntryToJournalEntry(newRecord);
+              dispatch({ type: 'ADD_ENTRY', payload: entry });
+            }
+            break;
+          case 'UPDATE':
+            if (newRecord) {
+              const entry = convertDbEntryToJournalEntry(newRecord);
+              dispatch({ type: 'UPDATE_ENTRY', payload: entry });
+            }
+            break;
+          case 'DELETE':
+            if (oldRecord) {
+              dispatch({ type: 'DELETE_ENTRY', payload: oldRecord.id });
+            }
+            break;
+        }
+      });
+
+      return () => {
+        subscription.unsubscribe();
+      };
+    } else {
+      // Clear entries when user logs out
+      dispatch({ type: 'SET_ENTRIES', payload: [] });
+    }
+  }, [isAuthenticated, user]);
+
+  const convertDbEntryToJournalEntry = (dbEntry: any): JournalEntry => ({
+    id: dbEntry.id,
+    userId: dbEntry.user_id,
+    content: dbEntry.content,
+    mood: dbEntry.mood,
+    date: new Date(dbEntry.date),
+    createdAt: new Date(dbEntry.created_at),
+    updatedAt: new Date(dbEntry.updated_at),
+  });
 
   const loadEntries = async () => {
+    if (!user) return;
+    
     try {
       dispatch({ type: 'SET_LOADING', payload: true });
-      const storedEntries = await storage.getJournalEntries();
+      const { data, error } = await db.getJournalEntries(user.id);
       
-      if (storedEntries && Array.isArray(storedEntries) && storedEntries.length > 0) {
-        // Convert date strings back to Date objects
-        const entries = storedEntries.map((entry: any) => ({
-          ...entry,
-          date: new Date(entry.date),
-          createdAt: new Date(entry.createdAt),
-          updatedAt: new Date(entry.updatedAt),
-        }));
-        dispatch({ type: 'SET_ENTRIES', payload: entries });
-      } else {
-        // Load mock data for demo
-        dispatch({ type: 'SET_ENTRIES', payload: mockJournalEntries });
-        await storage.storeJournalEntries(mockJournalEntries);
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
       }
+      
+      const entries = data?.map(convertDbEntryToJournalEntry) || [];
+      dispatch({ type: 'SET_ENTRIES', payload: entries });
     } catch (error) {
       console.error('Error loading journal entries:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to load journal entries' });
+    } finally {
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   };
 
   const addEntry = async (content: string, mood: MoodType): Promise<void> => {
+    if (!user) {
+      dispatch({ type: 'SET_ERROR', payload: 'User not authenticated' });
+      return;
+    }
+
     try {
-      const newEntry: JournalEntry = {
-        id: `entry-${Date.now()}`,
-        userId: 'parent-1', // This would come from auth context
+      const entryData = {
+        user_id: user.id,
         content,
         mood,
-        date: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        date: new Date().toISOString(),
       };
 
-      const updatedEntries = [newEntry, ...state.entries];
-      await storage.storeJournalEntries(updatedEntries);
-      dispatch({ type: 'ADD_ENTRY', payload: newEntry });
+      const { data, error } = await db.createJournalEntry(entryData);
+      
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      // Entry will be added via real-time subscription
+      // But we can also add it immediately for better UX
+      if (data) {
+        const entry = convertDbEntryToJournalEntry(data);
+        dispatch({ type: 'ADD_ENTRY', payload: entry });
+      }
     } catch (error) {
       console.error('Error adding journal entry:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to add journal entry' });
@@ -123,19 +176,24 @@ export const JournalProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   const updateEntry = async (id: string, content: string, mood: MoodType): Promise<void> => {
     try {
-      const updatedEntry: JournalEntry = {
-        ...state.entries.find(entry => entry.id === id)!,
+      const updates = {
         content,
         mood,
-        updatedAt: new Date(),
+        updated_at: new Date().toISOString(),
       };
 
-      const updatedEntries = state.entries.map(entry =>
-        entry.id === id ? updatedEntry : entry
-      );
+      const { data, error } = await db.updateJournalEntry(id, updates);
       
-      await storage.storeJournalEntries(updatedEntries);
-      dispatch({ type: 'UPDATE_ENTRY', payload: updatedEntry });
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      // Entry will be updated via real-time subscription
+      if (data) {
+        const entry = convertDbEntryToJournalEntry(data);
+        dispatch({ type: 'UPDATE_ENTRY', payload: entry });
+      }
     } catch (error) {
       console.error('Error updating journal entry:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to update journal entry' });
@@ -144,8 +202,14 @@ export const JournalProvider: React.FC<{ children: ReactNode }> = ({ children })
 
   const deleteEntry = async (id: string): Promise<void> => {
     try {
-      const updatedEntries = state.entries.filter(entry => entry.id !== id);
-      await storage.storeJournalEntries(updatedEntries);
+      const { error } = await db.deleteJournalEntry(id);
+      
+      if (error) {
+        dispatch({ type: 'SET_ERROR', payload: error.message });
+        return;
+      }
+
+      // Entry will be removed via real-time subscription
       dispatch({ type: 'DELETE_ENTRY', payload: id });
     } catch (error) {
       console.error('Error deleting journal entry:', error);
