@@ -13,7 +13,7 @@ import {
   ViewStyle,
   TextStyle,
 } from 'react-native';
-import { colors, typography, borderRadius, spacing } from '../../theme';
+import { colors, typography, borderRadius, spacing, shadows } from '../../theme';
 
 interface InputProps extends TextInputProps {
   label?: string;

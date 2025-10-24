@@ -86,23 +86,16 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary.dark} />
-      
-      {/* Background image with overlay */}
-      <View style={styles.backgroundContainer}>
-        <View style={styles.backgroundImage} />
-        <View style={styles.overlay} />
-      </View>
 
-      <ScrollView 
+
+
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         {/* Header with app branding */}
         <View style={styles.header}>
-          <View style={styles.brandContainer}>
-            <Text style={styles.brandIcon}>👶</Text>
-            <Text style={styles.brandName}>FamilyFlow</Text>
-          </View>
+          <Text style={styles.brandName}>NurtureBook</Text>
         </View>
 
         {/* Main content */}
@@ -157,22 +150,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               />
             </View>
 
-            {/* Divider */}
-            <View style={styles.divider}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>{t('login.continueWith')}</Text>
-              <View style={styles.dividerLine} />
-            </View>
 
-            {/* Social login buttons */}
-            <View style={styles.socialContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialIcon}>G</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialIcon}>f</Text>
-              </TouchableOpacity>
-            </View>
 
             {/* Guest login */}
             <Button
@@ -202,27 +180,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.primary.dark,
   },
-  backgroundContainer: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  backgroundImage: {
-    flex: 1,
-    backgroundColor: colors.primary.dark,
-    opacity: 0.1,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.primary.dark,
-    opacity: 0.8,
-  },
+
   scrollContent: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -232,15 +190,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing['2xl'],
   },
-  brandContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  brandIcon: {
-    fontSize: 40,
-    color: colors.secondary.main,
-  },
+
   brandName: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
@@ -287,44 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderColor: 'rgba(255, 255, 255, 0.3)',
   },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginVertical: spacing.lg,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: colors.text.muted,
-  },
-  dividerText: {
-    fontSize: typography.fontSize.base,
-    color: colors.text.muted,
-    paddingHorizontal: spacing.lg,
-  },
-  socialContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: spacing.lg,
-  },
-  socialButton: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  socialIcon: {
-    fontSize: 24,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
-  },
+
   guestButton: {
     borderColor: colors.text.muted,
     marginTop: spacing.lg,

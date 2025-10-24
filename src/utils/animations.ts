@@ -77,39 +77,3 @@ export const animations = {
   },
 };
 
-// Hook for button press animations
-export const useButtonAnimation = () => {
-  const scaleValue = new Animated.Value(1);
-  
-  const animatePress = () => {
-    Animated.sequence([
-      Animated.timing(scaleValue, {
-        toValue: 0.95,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleValue, {
-        toValue: 1,
-        duration: 100,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
-  
-  return { scaleValue, animatePress };
-};
-
-// Hook for card entrance animations
-export const useCardAnimation = () => {
-  const fadeAnim = new Animated.Value(0);
-  const slideAnim = new Animated.Value(20);
-  
-  const animateIn = () => {
-    Animated.parallel([
-      animations.fadeIn(fadeAnim),
-      animations.slideUp(slideAnim),
-    ]).start();
-  };
-  
-  return { fadeAnim, slideAnim, animateIn };
-};

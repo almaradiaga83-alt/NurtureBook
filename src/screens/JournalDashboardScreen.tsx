@@ -93,13 +93,7 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
       
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerButton}>
-          <Text style={styles.headerIcon}>☰</Text>
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('journal.timeline')}</Text>
-        <TouchableOpacity style={styles.headerButton}>
-          <Text style={styles.headerIcon}>⚙️</Text>
-        </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
@@ -203,28 +197,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background.light,
   },
   header: {
-    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
     backgroundColor: colors.background.light,
   },
-  headerButton: {
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  headerIcon: {
-    fontSize: 24,
-    color: colors.text.onPrimary,
-  },
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.onPrimary,
-    flex: 1,
+    color: colors.text.primary,
     textAlign: 'center',
   },
   content: {

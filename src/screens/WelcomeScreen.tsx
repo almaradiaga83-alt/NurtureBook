@@ -40,20 +40,12 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       
       {/* Header with app branding */}
       <View style={styles.header}>
-        <View style={styles.brandContainer}>
-          <Text style={styles.brandIcon}>👨‍👩‍👧‍👦</Text>
-          <Text style={styles.brandName}>ParentApp</Text>
-        </View>
+        <Text style={styles.brandName}>NurtureBook</Text>
       </View>
 
       {/* Main content */}
       <View style={styles.main}>
-        {/* Hero image placeholder */}
-        <View style={styles.heroContainer}>
-          <View style={styles.heroImage}>
-            <Text style={styles.heroEmoji}>🏠</Text>
-          </View>
-        </View>
+
 
         {/* Title and subtitle */}
         <View style={styles.textContainer}>
@@ -79,21 +71,7 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           />
         </View>
 
-        {/* Feature highlights */}
-        <View style={styles.featuresContainer}>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📝</Text>
-            <Text style={styles.featureText}>{t('welcome.journaling')}</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📅</Text>
-            <Text style={styles.featureText}>{t('welcome.calendar')}</Text>
-          </View>
-          <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>✅</Text>
-            <Text style={styles.featureText}>{t('welcome.toDoLists')}</Text>
-          </View>
-        </View>
+
       </View>
     </SafeAreaView>
   );
@@ -109,17 +87,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xl,
     alignItems: 'center',
   },
-  brandContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  brandIcon: {
-    fontSize: 32,
-    color: colors.secondary.main,
-  },
   brandName: {
-    fontSize: typography.fontSize.xl,
+    fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
     color: colors.text.onPrimary,
     fontFamily: typography.fontFamily.display,
@@ -130,24 +99,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: spacing.lg,
   },
-  heroContainer: {
-    width: '66%',
-    maxWidth: 300,
-    aspectRatio: 1,
-    marginBottom: spacing['2xl'],
-  },
-  heroImage: {
-    flex: 1,
-    backgroundColor: colors.secondary.main,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: colors.secondary.main,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroEmoji: {
-    fontSize: 64,
-  },
+
   textContainer: {
     alignItems: 'center',
     marginBottom: spacing['2xl'],
@@ -182,31 +134,7 @@ const styles = StyleSheet.create({
   secondaryButton: {
     borderColor: colors.secondary.main,
   },
-  featuresContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    gap: spacing['2xl'],
-    paddingTop: spacing['2xl'],
-    borderTopWidth: 1,
-    borderTopColor: colors.secondary.main,
-    width: '100%',
-    maxWidth: 480,
-  },
-  featureItem: {
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  featureIcon: {
-    fontSize: 32,
-    color: colors.secondary.main,
-  },
-  featureText: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.text.onPrimary,
-    textAlign: 'center',
-    opacity: 0.9,
-  },
+
 });
 
 export default WelcomeScreen;
