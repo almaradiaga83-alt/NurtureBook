@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "NurtureBook",
+    "slug": "nurturebook",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.svg",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.svg",
+      "resizeMode": "contain",
+      "backgroundColor": "#3b5249"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nurturebook.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.svg",
+        "backgroundColor": "#3b5249"
+      },
+      "package": "com.nurturebook.app",
+      "versionCode": 1
+    },
+    "web": {},
+    "extra": {
+      "eas": {
+        "projectId": "nurturebook-demo"
+      }
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "runtimeVersion": "exposdk:54.0.0"
+  }
+}
