@@ -6,7 +6,7 @@ interface MenuIconProps {
   size?: number;
 }
 
-const MenuIcon: React.FC<MenuIconProps> = ({ color = '#000000', size = 24 }) => {
+const MenuIcon: React.FC<MenuIconProps> = ({ color = '#F4A5A5', size = 24 }) => {
   return (
     <View style={[styles.container, { width: size, height: size }]}>
       <View style={[styles.line, { backgroundColor: color, width: size * 0.83 }]} />

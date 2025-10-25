@@ -8,7 +8,7 @@ interface StarIconProps {
   filled?: boolean;
 }
 
-const StarIcon: React.FC<StarIconProps> = ({ color = '#FFC107', size = 24, filled = true }) => {
+const StarIcon: React.FC<StarIconProps> = ({ color = '#F4A5A5', size = 24, filled = true }) => {
   return (
     <View style={{ width: size, height: size }}>
       <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">

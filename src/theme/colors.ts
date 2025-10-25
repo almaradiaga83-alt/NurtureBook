@@ -12,13 +12,13 @@ export const colors = {
     dark: '#1a2e22',      // Darker variant
   },
   
-  // Secondary colors - Coral Pink from designs
+  // Secondary colors - Pastel Pink
   secondary: {
-    main: '#f4a5a5',      // Coral pink from designs
+    main: '#F4A5A5',      // Pastel pink for icons and accents
     light: '#f8c2c2',     // Lighter variant
     lighter: '#fce8e8',   // Even lighter variant
     dark: '#e88888',      // Darker variant
-    button: '#f4a5a5',    // Exact button color from design
+    button: '#F4A5A5',    // Exact button color from design
   },
   
   // Garden/Mint colors for My Garden screen

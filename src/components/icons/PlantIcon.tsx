@@ -7,7 +7,7 @@ interface PlantIconProps {
   size?: number;
 }
 
-const PlantIcon: React.FC<PlantIconProps> = ({ color = '#4CAF50', size = 24 }) => {
+const PlantIcon: React.FC<PlantIconProps> = ({ color = '#F4A5A5', size = 24 }) => {
   return (
     <View style={{ width: size, height: size }}>
       <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">

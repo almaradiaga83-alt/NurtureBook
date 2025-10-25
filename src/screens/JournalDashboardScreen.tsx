@@ -117,11 +117,14 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuButton}>
-          <MenuIcon color={colors.text.onPrimary} size={24} />
+          <MenuIcon color={colors.secondary.main} size={24} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Interactive Timeline</Text>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>Interactive Timeline</Text>
+          <Text style={styles.brandSubtitle}>NurtureBook</Text>
+        </View>
         <TouchableOpacity style={styles.settingsButton}>
-          <SettingsIcon color={colors.text.onPrimary} size={22} />
+          <SettingsIcon color={colors.secondary.main} size={22} />
         </TouchableOpacity>
       </View>
 
@@ -197,13 +200,13 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.milestonesContainer}>
           <Card style={styles.milestoneCard}>
             <View style={styles.milestoneContent}>
-              <StarIcon color="#FFD700" size={20} filled={true} />
+              <StarIcon color={colors.secondary.main} size={20} filled={true} />
               <Text style={styles.milestoneText}>Celebrate small victories, like a new skill learned!</Text>
             </View>
           </Card>
           <Card style={styles.milestoneCard}>
             <View style={styles.milestoneContent}>
-              <StarIcon color="#FFC107" size={20} filled={true} />
+              <StarIcon color={colors.secondary.main} size={20} filled={true} />
               <Text style={styles.milestoneText}>Document a funny family moment.</Text>
             </View>
           </Card>
@@ -238,10 +241,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+  headerCenter: {
+    alignItems: 'center',
+    flex: 1,
+  },
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.onPrimary,
+    color: colors.secondary.main,
+    textAlign: 'center',
+  },
+  brandSubtitle: {
+    fontSize: typography.fontSize.xs,
+    color: colors.secondary.main,
+    fontWeight: typography.fontWeight.medium,
+    opacity: 0.8,
   },
   settingsButton: {
     width: 40,

@@ -7,7 +7,7 @@ interface SettingsIconProps {
   size?: number;
 }
 
-const SettingsIcon: React.FC<SettingsIconProps> = ({ color = '#000000', size = 24 }) => {
+const SettingsIcon: React.FC<SettingsIconProps> = ({ color = '#F4A5A5', size = 24 }) => {
   return (
     <View style={{ width: size, height: size }}>
       <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">

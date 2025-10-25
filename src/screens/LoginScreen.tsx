@@ -12,6 +12,7 @@ import {
   StatusBar,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -85,8 +86,12 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       >
         {/* Header with app branding */}
         <View style={styles.header}>
-          <Text style={styles.brandName}>FamilyFlow</Text>
-          <Text style={styles.demoLabel}>Demo Mode - Use any email/password</Text>
+          <Image 
+            source={require('../assets/images/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.brandName}>NurtureBook</Text>
         </View>
 
         {/* Main content */}
@@ -200,24 +205,19 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: spacing['2xl'],
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.md,
   },
-
+  logo: {
+    width: 40,
+    height: 40,
+  },
   brandName: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
-    fontFamily: typography.fontFamily.display,
-  },
-  demoLabel: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
     color: colors.secondary.main,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
-    marginTop: spacing.sm,
-    textAlign: 'center',
+    fontFamily: typography.fontFamily.display,
   },
   content: {
     maxWidth: 400,

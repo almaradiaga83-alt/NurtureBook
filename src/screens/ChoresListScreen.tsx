@@ -75,11 +75,14 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuButton}>
-          <MenuIcon color={colors.text.primary} size={24} />
+          <MenuIcon color={colors.secondary.main} size={24} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>My Garden</Text>
+        <View style={styles.headerCenter}>
+          <Text style={styles.headerTitle}>My Garden</Text>
+          <Text style={styles.brandSubtitle}>NurtureBook</Text>
+        </View>
         <TouchableOpacity style={styles.notificationButton}>
-          <BellIcon color={colors.text.primary} size={22} />
+          <BellIcon color={colors.secondary.main} size={22} />
         </TouchableOpacity>
       </View>
 
@@ -151,7 +154,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                 <Card key={chore.id} style={styles.choreCard}>
                   <View style={styles.choreContent}>
                     <View style={styles.choreIcon}>
-                      <PlantIcon color="#4CAF50" size={20} />
+                      <PlantIcon color={colors.secondary.main} size={20} />
                     </View>
                     
                     <View style={styles.choreInfo}>
@@ -166,7 +169,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                     </View>
                     
                     <View style={styles.chorePoints}>
-                      <StarIcon color="#FFC107" size={14} filled={true} />
+                      <StarIcon color={colors.secondary.main} size={14} filled={true} />
                       <Text style={styles.pointsText}>{chore.points}</Text>
                     </View>
                   </View>
@@ -206,7 +209,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                   </View>
                 </View>
                 <View style={styles.progressPoints}>
-                  <StarIcon color="#FFC107" size={12} filled={true} />
+                  <StarIcon color={colors.secondary.main} size={12} filled={true} />
                   <Text style={styles.progressPointsText}>{child.totalPoints}</Text>
                 </View>
               </View>
@@ -239,6 +242,9 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     backgroundColor: colors.garden.background,
   },
+  headerCenter: {
+    alignItems: 'center',
+  },
   menuButton: {
     width: 40,
     height: 40,
@@ -249,6 +255,11 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.text.primary,
+  },
+  brandSubtitle: {
+    fontSize: typography.fontSize.xs,
+    color: colors.secondary.main,
+    fontWeight: typography.fontWeight.medium,
   },
   notificationButton: {
     width: 40,

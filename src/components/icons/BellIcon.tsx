@@ -6,7 +6,7 @@ interface BellIconProps {
   size?: number;
 }
 
-const BellIcon: React.FC<BellIconProps> = ({ color = '#000000', size = 24 }) => {
+const BellIcon: React.FC<BellIconProps> = ({ color = '#F4A5A5', size = 24 }) => {
   return (
     <View style={[styles.container, { width: size, height: size }]}>
       <View style={[styles.bellTop, { 

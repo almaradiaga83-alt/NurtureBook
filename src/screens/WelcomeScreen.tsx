@@ -10,6 +10,7 @@ import {
   StyleSheet,
   SafeAreaView,
   StatusBar,
+  Image,
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../types';
@@ -44,8 +45,12 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       
       {/* Header with app branding */}
       <View style={styles.header}>
-        <Text style={styles.brandName}>ParentApp</Text>
-        <Text style={styles.demoLabel}>Demo Mode</Text>
+        <Image 
+          source={require('../assets/images/logo.png')}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Text style={styles.brandName}>NurtureBook</Text>
       </View>
 
       {/* Main content */}
@@ -82,15 +87,15 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
         {/* Feature preview */}
         <View style={styles.featurePreview}>
           <View style={styles.featureItem}>
-            <JournalIcon color={colors.text.onPrimary} size={28} />
+            <JournalIcon color={colors.secondary.main} size={28} />
             <Text style={styles.featureLabel}>Journaling</Text>
           </View>
           <View style={styles.featureItem}>
-            <CalendarIcon color={colors.text.onPrimary} size={28} />
+            <CalendarIcon color={colors.secondary.main} size={28} />
             <Text style={styles.featureLabel}>Calendar</Text>
           </View>
           <View style={styles.featureItem}>
-            <CheckIcon color={colors.text.onPrimary} size={28} />
+            <CheckIcon color={colors.secondary.main} size={28} />
             <Text style={styles.featureLabel}>To-Do Lists</Text>
           </View>
         </View>
@@ -108,22 +113,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xl,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.md,
+  },
+  logo: {
+    width: 40,
+    height: 40,
   },
   brandName: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.onPrimary,
-    fontFamily: typography.fontFamily.display,
-  },
-  demoLabel: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.medium,
     color: colors.secondary.main,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: 12,
-    marginTop: spacing.sm,
+    fontFamily: typography.fontFamily.display,
   },
   main: {
     flex: 1,
@@ -152,9 +154,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   title: {
-    fontSize: 28, // Larger, bolder title
-    fontWeight: '800', // Extra bold
-    color: colors.text.onPrimary,
+    fontSize: 28,
+    fontWeight: '800',
+    color: colors.secondary.main,
     textAlign: 'center',
     lineHeight: 34,
     marginBottom: spacing.md,
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.normal,
-    color: colors.text.onPrimary,
+    color: colors.secondary.main,
     textAlign: 'center',
     lineHeight: typography.lineHeight.normal * typography.fontSize.base,
     opacity: 0.9,
@@ -198,7 +200,7 @@ const styles = StyleSheet.create({
   },
   featureLabel: {
     fontSize: typography.fontSize.sm,
-    color: colors.text.onPrimary,
+    color: colors.secondary.main,
     textAlign: 'center',
   },
 });
