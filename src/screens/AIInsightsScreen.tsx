@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.main,
   },
   insightCard: {
-    backgroundColor: colors.secondary.main,
+    backgroundColor: colors.background.insight,
     marginTop: spacing.lg,
   },
   insightTitle: {
@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
   learnMoreArrow: {
     fontSize: typography.fontSize.base,
     color: colors.primary.main,
+    marginLeft: spacing.xs,
   },
   emptyCard: {
     alignItems: 'center',

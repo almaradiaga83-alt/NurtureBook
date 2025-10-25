@@ -27,12 +27,17 @@ interface Props {
 
 const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
   const { chores, children, completeChore, uncompleteChore } = useChores();
-  const [selectedChildFilter, setSelectedChildFilter] = useState<string | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState<string>('All');
+  const [selectedStatus, setSelectedStatus] = useState<'To Grow' | 'Bloomed'>('To Grow');
 
-  // Filter chores based on selected child
-  const filteredChores = selectedChildFilter 
-    ? chores.filter(chore => chore.assignedTo === selectedChildFilter)
-    : chores;
+  // Filter chores based on selected child and status
+  const filteredChores = chores.filter(chore => {
+    const statusMatch = selectedStatus === 'To Grow' ? !chore.completed : chore.completed;
+    if (selectedFilter === 'All') return statusMatch;
+    if (selectedFilter === 'Mom' || selectedFilter === 'Dad') return statusMatch; // Mock filter
+    const child = children.find(c => c.name === selectedFilter);
+    return statusMatch && (child ? chore.assignedTo === child.id : false);
+  });
 
   const getChildName = (childId: string) => {
     const child = children.find(c => c.id === childId);
@@ -61,183 +66,158 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor={colors.background.light} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.garden.background} />
       
       {/* Header */}
       <View style={styles.header}>
+        <TouchableOpacity style={styles.menuButton}>
+          <Text style={styles.menuIcon}>☰</Text>
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>My Garden</Text>
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => navigation.navigate('AddChore')}
-        >
-          <Text style={styles.addButtonText}>+ Chore</Text>
+        <TouchableOpacity style={styles.notificationButton}>
+          <Text style={styles.notificationIcon}>🔔</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Children Filter */}
+        {/* Family Filter */}
         <View style={styles.filterContainer}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <TouchableOpacity
-              style={[
-                styles.filterChip,
-                selectedChildFilter === null && styles.filterChipActive
-              ]}
-              onPress={() => setSelectedChildFilter(null)}
-            >
-              <Text style={[
-                styles.filterChipText,
-                selectedChildFilter === null && styles.filterChipTextActive
-              ]}>
-                All
-              </Text>
-            </TouchableOpacity>
-            {children.map(child => (
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
+            {['All', 'Mom', 'Dad', 'Child 1', 'Child 2'].map((filter) => (
               <TouchableOpacity
-                key={child.id}
+                key={filter}
                 style={[
                   styles.filterChip,
-                  selectedChildFilter === child.id && styles.filterChipActive
+                  selectedFilter === filter && styles.filterChipActive
                 ]}
-                onPress={() => setSelectedChildFilter(child.id)}
+                onPress={() => setSelectedFilter(filter)}
               >
                 <Text style={[
                   styles.filterChipText,
-                  selectedChildFilter === child.id && styles.filterChipTextActive
+                  selectedFilter === filter && styles.filterChipTextActive
                 ]}>
-                  {child.name}
+                  {filter}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* Children Points Summary */}
-        <View style={styles.childrenContainer}>
-          {children.map(child => (
-            <Card
-              key={child.id}
-              style={styles.childCard}
-              onPress={() => handleChildProfile(child.id)}
-            >
-              <View style={styles.childInfo}>
-                <View style={styles.childAvatar}>
-                  <Text style={styles.childAvatarText}>
-                    {child.name.charAt(0)}
-                  </Text>
-                </View>
-                <View style={styles.childDetails}>
-                  <Text style={styles.childName}>{child.name}</Text>
-                  <Text style={styles.childPoints}>{child.totalPoints} points</Text>
-                </View>
-                <View style={styles.childBadge}>
-                  <Text style={styles.childBadgeText}>🌱</Text>
-                </View>
-              </View>
-            </Card>
-          ))}
-          
-          {/* Add Child Button */}
-          <TouchableOpacity 
-            style={styles.addChildCard}
-            onPress={() => navigation.navigate('AddChild')}
+        {/* Status Toggle */}
+        <View style={styles.statusToggleContainer}>
+          <TouchableOpacity
+            style={[
+              styles.statusToggle,
+              selectedStatus === 'To Grow' && styles.statusToggleActive
+            ]}
+            onPress={() => setSelectedStatus('To Grow')}
           >
-            <View style={styles.addChildContent}>
-              <Text style={styles.addChildIcon}>+</Text>
-              <Text style={styles.addChildText}>Add Child</Text>
-            </View>
+            <Text style={[
+              styles.statusToggleText,
+              selectedStatus === 'To Grow' && styles.statusToggleTextActive
+            ]}>
+              To Grow
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.statusToggle,
+              selectedStatus === 'Bloomed' && styles.statusToggleActive
+            ]}
+            onPress={() => setSelectedStatus('Bloomed')}
+          >
+            <Text style={[
+              styles.statusToggleText,
+              selectedStatus === 'Bloomed' && styles.statusToggleTextActive
+            ]}>
+              Bloomed
+            </Text>
           </TouchableOpacity>
         </View>
 
         {/* Chores List */}
-        <Text style={styles.sectionTitle}>Garden Tasks</Text>
         <View style={styles.choresContainer}>
           {filteredChores.length > 0 ? (
-            filteredChores.map(chore => (
-              <Card key={chore.id} style={styles.choreCard}>
-                <View style={styles.choreContent}>
-                  <TouchableOpacity
-                    style={styles.choreToggle}
-                    onPress={() => handleChoreToggle(chore.id, chore.completed)}
-                  >
-                    <View style={[
-                      styles.choreCheckbox,
-                      chore.completed && styles.choreCheckboxCompleted
-                    ]}>
-                      {chore.completed && (
-                        <Text style={styles.choreCheckmark}>✓</Text>
-                      )}
+            filteredChores.map(chore => {
+              const child = children.find(c => c.id === chore.assignedTo);
+              const childInitial = child?.name.charAt(0) || 'C';
+              const childColor = child?.name === 'Emma' ? colors.child.c1 : colors.child.c2;
+              
+              return (
+                <Card key={chore.id} style={styles.choreCard}>
+                  <View style={styles.choreContent}>
+                    <View style={styles.choreIcon}>
+                      <Text style={styles.choreIconText}>🌱</Text>
                     </View>
-                  </TouchableOpacity>
-                  
-                  <View style={styles.choreInfo}>
-                    <Text style={[
-                      styles.choreTitle,
-                      chore.completed && styles.choreTitleCompleted
-                    ]}>
-                      {chore.title}
-                    </Text>
-                    <View style={styles.choreDetails}>
-                      <Text style={styles.choreAssignee}>
-                        {getChildName(chore.assignedTo)}
+                    
+                    <View style={styles.choreInfo}>
+                      <Text style={styles.choreTitle}>{chore.title}</Text>
+                      <Text style={styles.choreDue}>
+                        Due: {chore.dueDate ? formatDueDate(chore.dueDate) : 'Today'}
                       </Text>
-                      {chore.dueDate && (
-                        <Text style={styles.choreDueDate}>
-                          Due: {formatDueDate(chore.dueDate)}
-                        </Text>
-                      )}
+                    </View>
+                    
+                    <View style={[styles.childAvatar, { backgroundColor: childColor }]}>
+                      <Text style={styles.childAvatarText}>{childInitial}</Text>
+                    </View>
+                    
+                    <View style={styles.chorePoints}>
+                      <Text style={styles.pointsIcon}>⭐</Text>
+                      <Text style={styles.pointsText}>{chore.points}</Text>
                     </View>
                   </View>
-                  
-                  <View style={styles.chorePoints}>
-                    <Text style={styles.chorePointsText}>{chore.points}</Text>
-                    <Text style={styles.chorePointsLabel}>pts</Text>
-                  </View>
-                </View>
-              </Card>
-            ))
+                </Card>
+              );
+            })
           ) : (
             <Card style={styles.emptyState}>
               <Text style={styles.emptyStateIcon}>🌿</Text>
-              <Text style={styles.emptyStateText}>No tasks in the garden</Text>
-              <Text style={styles.emptyStateSubtext}>
-                {selectedChildFilter 
-                  ? `No tasks assigned to ${getChildName(selectedChildFilter)}`
-                  : 'Add some tasks to get started!'
-                }
-              </Text>
+              <Text style={styles.emptyStateText}>No tasks to {selectedStatus.toLowerCase()}</Text>
             </Card>
           )}
         </View>
 
         {/* Garden Progress */}
         <Text style={styles.sectionTitle}>Garden Progress</Text>
-        <Card style={styles.progressCard}>
-          <View style={styles.progressContent}>
-            <Text style={styles.progressTitle}>Weekly Growth</Text>
-            <View style={styles.progressStats}>
-              <View style={styles.progressStat}>
-                <Text style={styles.progressStatNumber}>
-                  {chores.filter(c => c.completed).length}
-                </Text>
-                <Text style={styles.progressStatLabel}>Completed</Text>
+        <View style={styles.progressContainer}>
+          {children.map((child, index) => {
+            const childColor = child.name === 'Emma' ? colors.child.c1 : colors.child.c2;
+            const childLabel = child.name === 'Emma' ? 'C1' : 'C2';
+            const progress = Math.min(child.totalPoints / 200, 1); // Max 200 points
+            
+            return (
+              <View key={child.id} style={styles.progressItem}>
+                <View style={[styles.progressAvatar, { backgroundColor: childColor }]}>
+                  <Text style={styles.progressAvatarText}>{childLabel}</Text>
+                </View>
+                <View style={styles.progressInfo}>
+                  <Text style={styles.progressChildName}>{child.name}</Text>
+                  <View style={styles.progressBar}>
+                    <View 
+                      style={[
+                        styles.progressBarFill, 
+                        { width: `${progress * 100}%` }
+                      ]} 
+                    />
+                  </View>
+                </View>
+                <View style={styles.progressPoints}>
+                  <Text style={styles.progressPointsIcon}>⭐</Text>
+                  <Text style={styles.progressPointsText}>{child.totalPoints}</Text>
+                </View>
               </View>
-              <View style={styles.progressStat}>
-                <Text style={styles.progressStatNumber}>
-                  {chores.filter(c => !c.completed).length}
-                </Text>
-                <Text style={styles.progressStatLabel}>Pending</Text>
-              </View>
-              <View style={styles.progressStat}>
-                <Text style={styles.progressStatNumber}>
-                  {children.reduce((sum, child) => sum + child.totalPoints, 0)}
-                </Text>
-                <Text style={styles.progressStatLabel}>Total Points</Text>
-              </View>
-            </View>
-          </View>
-        </Card>
+            );
+          })}
+        </View>
       </ScrollView>
+
+      {/* Floating Action Button */}
+      <TouchableOpacity 
+        style={styles.fab}
+        onPress={() => navigation.navigate('AddChore')}
+      >
+        <Text style={styles.fabIcon}>+</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -245,50 +225,59 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background.light,
+    backgroundColor: colors.garden.background,
   },
   header: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
-    backgroundColor: colors.background.light,
+    backgroundColor: colors.garden.background,
+  },
+  menuButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuIcon: {
+    fontSize: 20,
+    color: colors.text.primary,
   },
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
     color: colors.text.primary,
-    flex: 1,
   },
-  addButton: {
-    backgroundColor: colors.primary.main,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-    borderRadius: 20,
+  notificationButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  addButtonText: {
-    fontSize: typography.fontSize.sm,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.text.onPrimary,
+  notificationIcon: {
+    fontSize: 20,
   },
   content: {
     flex: 1,
     paddingHorizontal: spacing.lg,
   },
   filterContainer: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  filterScroll: {
+    flexGrow: 0,
   },
   filterChip: {
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     marginRight: spacing.sm,
-    backgroundColor: colors.background.card,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border.light,
   },
   filterChipActive: {
-    backgroundColor: colors.secondary.main,
-    borderColor: colors.secondary.main,
+    backgroundColor: colors.action.blue,
   },
   filterChipText: {
     fontSize: typography.fontSize.sm,
@@ -298,132 +287,115 @@ const styles = StyleSheet.create({
   filterChipTextActive: {
     color: colors.text.light,
   },
-  childrenContainer: {
-    gap: spacing.md,
+  statusToggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: 25,
+    padding: 4,
     marginBottom: spacing.lg,
   },
-  childCard: {
-    backgroundColor: colors.background.secondary,
-  },
-  childInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  childAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.secondary.main,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: spacing.md,
-  },
-  childAvatarText: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
-  },
-  childDetails: {
+  statusToggle: {
     flex: 1,
+    paddingVertical: spacing.sm,
+    alignItems: 'center',
+    borderRadius: 20,
   },
-  childName: {
-    fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.semibold,
-    color: colors.text.primary,
-    marginBottom: spacing.xs,
+  statusToggleActive: {
+    backgroundColor: colors.background.light,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  childPoints: {
+  statusToggleText: {
     fontSize: typography.fontSize.sm,
+    fontWeight: typography.fontWeight.medium,
     color: colors.text.secondary,
   },
-  childBadge: {
-    width: 32,
-    height: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  childBadgeText: {
-    fontSize: 24,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.bold,
+  statusToggleTextActive: {
     color: colors.text.primary,
-    marginBottom: spacing.md,
+    fontWeight: typography.fontWeight.semibold,
   },
   choresContainer: {
     gap: spacing.md,
     marginBottom: spacing.lg,
   },
   choreCard: {
-    backgroundColor: colors.background.card,
+    backgroundColor: colors.background.light,
+    borderRadius: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   choreContent: {
     flexDirection: 'row',
     alignItems: 'center',
+    padding: spacing.md,
   },
-  choreToggle: {
-    marginRight: spacing.md,
-  },
-  choreCheckbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.border.light,
+  choreIcon: {
+    width: 40,
+    height: 40,
     alignItems: 'center',
     justifyContent: 'center',
+    marginRight: spacing.md,
   },
-  choreCheckboxCompleted: {
-    backgroundColor: colors.secondary.main,
-    borderColor: colors.secondary.main,
-  },
-  choreCheckmark: {
-    fontSize: 14,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.light,
+  choreIconText: {
+    fontSize: 24,
   },
   choreInfo: {
     flex: 1,
   },
   choreTitle: {
     fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.medium,
+    fontWeight: typography.fontWeight.semibold,
     color: colors.text.primary,
     marginBottom: spacing.xs,
   },
-  choreTitleCompleted: {
-    textDecorationLine: 'line-through',
-    color: colors.text.secondary,
-  },
-  choreDetails: {
-    flexDirection: 'row',
-    gap: spacing.md,
-  },
-  choreAssignee: {
+  choreDue: {
     fontSize: typography.fontSize.sm,
     color: colors.text.secondary,
   },
-  choreDueDate: {
+  childAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm,
+  },
+  childAvatarText: {
     fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.text.light,
   },
   chorePoints: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: spacing.md,
   },
-  chorePointsText: {
+  pointsIcon: {
+    fontSize: 16,
+    marginRight: 2,
+  },
+  pointsText: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.text.primary,
+  },
+  sectionTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.secondary.main,
-  },
-  chorePointsLabel: {
-    fontSize: typography.fontSize.xs,
-    color: colors.text.secondary,
+    color: colors.text.primary,
+    marginBottom: spacing.md,
+    marginTop: spacing.lg,
   },
   emptyState: {
     alignItems: 'center',
     paddingVertical: spacing['2xl'],
+    backgroundColor: colors.background.light,
+    borderRadius: 16,
   },
   emptyStateIcon: {
     fontSize: 48,
@@ -433,67 +405,89 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.medium,
     color: colors.text.primary,
-    marginBottom: spacing.sm,
   },
-  emptyStateSubtext: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-    textAlign: 'center',
+  progressContainer: {
+    gap: spacing.md,
+    marginBottom: spacing['6xl'], // Space for FAB
   },
-  progressCard: {
-    backgroundColor: colors.background.secondary,
-    marginBottom: spacing['2xl'],
-  },
-  progressContent: {
-    alignItems: 'center',
-  },
-  progressTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
-    marginBottom: spacing.lg,
-  },
-  progressStats: {
+  progressItem: {
     flexDirection: 'row',
-    gap: spacing['2xl'],
-  },
-  progressStat: {
     alignItems: 'center',
+    backgroundColor: colors.background.light,
+    borderRadius: 16,
+    padding: spacing.md,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  progressStatNumber: {
-    fontSize: typography.fontSize['2xl'],
-    fontWeight: typography.fontWeight.bold,
-    color: colors.secondary.main,
-    marginBottom: spacing.xs,
-  },
-  progressStatLabel: {
-    fontSize: typography.fontSize.sm,
-    color: colors.text.secondary,
-  },
-  addChildCard: {
-    backgroundColor: colors.background.surface,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderStyle: 'dashed',
-    borderColor: colors.primary.main,
-    padding: spacing.lg,
+  progressAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 80,
+    marginRight: spacing.md,
   },
-  addChildContent: {
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  addChildIcon: {
-    fontSize: 24,
-    color: colors.primary.main,
+  progressAvatarText: {
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.bold,
+    color: colors.text.light,
   },
-  addChildText: {
+  progressInfo: {
+    flex: 1,
+  },
+  progressChildName: {
     fontSize: typography.fontSize.base,
-    fontWeight: typography.fontWeight.medium,
-    color: colors.primary.main,
+    fontWeight: typography.fontWeight.semibold,
+    color: colors.text.primary,
+    marginBottom: spacing.xs,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: colors.border.light,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressBarFill: {
+    height: '100%',
+    backgroundColor: '#ffc107', // Yellow progress bar
+    borderRadius: 4,
+  },
+  progressPoints: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  progressPointsIcon: {
+    fontSize: 16,
+    marginRight: 4,
+  },
+  progressPointsText: {
+    fontSize: typography.fontSize.base,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.text.primary,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: spacing['2xl'],
+    right: spacing['2xl'],
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.action.blue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  fabIcon: {
+    fontSize: 24,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.text.light,
   },
 });
 

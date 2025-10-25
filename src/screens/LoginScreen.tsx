@@ -64,8 +64,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleGuestLogin = async () => {
-    // For now, redirect to sign up - we'll implement demo mode later if needed
-    navigation.navigate('SignUp');
+    // Demo guest login - just navigate to main app
+    navigation.navigate('MainApp');
   };
 
   const handleForgotPassword = () => {
@@ -85,7 +85,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       >
         {/* Header with app branding */}
         <View style={styles.header}>
-          <Text style={styles.brandName}>NurtureBook</Text>
+          <Text style={styles.brandName}>FamilyFlow</Text>
           <Text style={styles.demoLabel}>Demo Mode - Use any email/password</Text>
         </View>
 
@@ -127,7 +127,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               <Button
                 title={t('login.logIn')}
                 onPress={handleLogin}
-                variant="primary"
+                variant="secondary"
                 size="large"
                 loading={isLoading}
                 style={styles.loginButton}
@@ -141,7 +141,25 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               />
             </View>
 
+            {/* Social login */}
+            <Text style={styles.socialText}>Or continue with</Text>
+            <View style={styles.socialContainer}>
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialIcon}>🍎</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.socialButton}>
+                <Text style={styles.socialIcon}>📘</Text>
+              </TouchableOpacity>
+            </View>
 
+            {/* Guest login */}
+            <Button
+              title="Continue as Guest"
+              onPress={handleGuestLogin}
+              variant="outline"
+              size="large"
+              style={styles.guestButton}
+            />
 
             {/* Sign up link */}
             <TouchableOpacity onPress={handleSignUp} style={styles.signUpLink}>
@@ -234,8 +252,36 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary.main,
   },
   signUpButton: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  socialText: {
+    fontSize: typography.fontSize.sm,
+    color: colors.text.onPrimary,
+    textAlign: 'center',
+    marginTop: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  socialContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.md,
+    marginBottom: spacing.lg,
+  },
+  socialButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  socialIcon: {
+    fontSize: 24,
+  },
+  guestButton: {
     backgroundColor: 'transparent',
-    borderColor: colors.secondary.main,
+    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
 
   signUpLink: {

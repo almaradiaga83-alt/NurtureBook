@@ -81,9 +81,8 @@ const ChildProfileScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const getChildColor = () => {
-    const colors = ['#ffb3ba', '#bae1ff', '#baffc9', '#ffffba', '#ffdfba'];
-    const index = children.findIndex(c => c.id === childId);
-    return colors[index % colors.length];
+    // Use realistic photo-style background
+    return '#f0f0f0'; // Light gray for realistic photo effect
   };
 
   return (
@@ -195,10 +194,10 @@ const ChildProfileScreen: React.FC<Props> = ({ navigation, route }) => {
               <View key={familyMember.id} style={styles.familyMember}>
                 <View style={[
                   styles.familyAvatar,
-                  { backgroundColor: getChildColor() }
+                  { backgroundColor: familyMember.id === childId ? themeColors.child.c1 : themeColors.child.c2 }
                 ]}>
                   <Text style={styles.familyAvatarText}>
-                    {getChildInitials()}
+                    {familyMember.name.charAt(0)}
                   </Text>
                 </View>
               </View>
@@ -483,7 +482,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: themeColors.primary.main,
+    backgroundColor: themeColors.action.green,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',

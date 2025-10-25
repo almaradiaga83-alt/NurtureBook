@@ -4,20 +4,27 @@
  */
 
 export const colors = {
-  // Primary colors - Dark Green Pastel variants
+  // Primary colors - Deep Green from designs
   primary: {
-    main: '#2d4a3a',      // Darker green for better contrast
+    main: '#2d4a3a',      // Deep forest green from designs
     light: '#4a6b5a',     // Lighter variant
     lighter: '#6b8e7a',   // Even lighter variant
     dark: '#1a2e22',      // Darker variant
   },
   
-  // Secondary colors - Pastel Pink variants
+  // Secondary colors - Coral Pink from designs
   secondary: {
-    main: '#e8a5a5',      // Slightly darker pink for better contrast
-    light: '#f2c2c2',     // Lighter variant
-    lighter: '#f7d9d9',   // Even lighter variant
-    dark: '#d48888',      // Darker variant
+    main: '#f4a5a5',      // Coral pink from designs
+    light: '#f8c2c2',     // Lighter variant
+    lighter: '#fce8e8',   // Even lighter variant
+    dark: '#e88888',      // Darker variant
+  },
+  
+  // Garden/Mint colors for My Garden screen
+  garden: {
+    background: '#e8f5e8', // Light mint green background
+    light: '#f0f9f0',      // Very light mint
+    accent: '#c8e6c9',     // Mint accent
   },
   
   // Background colors
@@ -28,6 +35,8 @@ export const colors = {
     cardDark: '#1a2e22',  // Dark card background
     secondary: '#f8f9fa', // Light gray secondary background
     surface: '#fafbfc',   // Surface color for elevated elements
+    cream: '#f5f1e8',     // Cream background for illustrations
+    insight: '#fce8e8',   // Pink background for insight cards
   },
   
   // Text colors - Improved contrast
@@ -74,6 +83,21 @@ export const colors = {
     pressed: 'rgba(45, 74, 58, 0.12)',   // Pressed state
     focus: 'rgba(45, 74, 58, 0.16)',     // Focus state
     disabled: 'rgba(107, 114, 128, 0.3)', // Disabled state
+  },
+  
+  // Child avatar colors
+  child: {
+    c1: '#f4a5a5',        // Pink for Child 1
+    c2: '#b19cd9',        // Purple for Child 2
+    dad: '#87ceeb',       // Blue for Dad
+    mom: '#f4a5a5',       // Pink for Mom
+  },
+  
+  // Action colors
+  action: {
+    blue: '#2196f3',      // Blue FAB
+    green: '#4caf50',     // Green buttons
+    red: '#f44336',       // Red/coral for logout
   },
 } as const;
 

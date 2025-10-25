@@ -54,7 +54,7 @@ const Button: React.FC<ButtonProps> = ({
   };
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: borderRadius.lg,
+      borderRadius: 25, // More rounded to match design
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',

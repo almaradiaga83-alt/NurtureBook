@@ -62,7 +62,6 @@ const NewJournalEntryScreen: React.FC<Props> = ({ navigation }) => {
   const formatDate = () => {
     const now = new Date();
     return now.toLocaleDateString('en-US', { 
-      weekday: 'long',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -71,11 +70,13 @@ const NewJournalEntryScreen: React.FC<Props> = ({ navigation }) => {
 
   const formatTime = () => {
     const now = new Date();
-    return now.toLocaleTimeString('en-US', { 
+    const weekday = now.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase();
+    const time = now.toLocaleTimeString('en-US', { 
       hour: 'numeric',
       minute: '2-digit',
       hour12: true
     }).toUpperCase();
+    return `${weekday}, ${time}`;
   };
 
   return (
@@ -234,6 +235,7 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: colors.primary.main,
+    borderRadius: 25,
   },
 });
 
