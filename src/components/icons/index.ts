@@ -1,0 +1,8 @@
+export { default as MenuIcon } from './MenuIcon';
+export { default as BellIcon } from './BellIcon';
+export { default as StarIcon } from './StarIcon';
+export { default as PlantIcon } from './PlantIcon';
+export { default as SettingsIcon } from './SettingsIcon';
+export { default as CheckIcon } from './CheckIcon';
+export { default as CalendarIcon } from './CalendarIcon';
+export { default as JournalIcon } from './JournalIcon';

@@ -79,7 +79,7 @@ const AIInsightsScreen: React.FC<Props> = ({ navigation }) => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-            <Text style={styles.backIcon}>←</Text>
+            <View style={styles.backArrow} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{t('insights.title')}</Text>
           <View style={styles.headerSpacer} />
@@ -101,7 +101,7 @@ const AIInsightsScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-          <Text style={styles.backIcon}>←</Text>
+          <View style={styles.backArrow} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('insights.title')}</Text>
         <View style={styles.headerSpacer} />
@@ -144,7 +144,7 @@ const AIInsightsScreen: React.FC<Props> = ({ navigation }) => {
           ))
         ) : (
           <Card style={styles.emptyCard}>
-            <Text style={styles.emptyIcon}>✨</Text>
+            <View style={styles.emptyIcon} />
             <Text style={styles.emptyTitle}>{t('insights.noInsights')}</Text>
             <Text style={styles.emptySubtitle}>{t('insights.checkBack')}</Text>
           </Card>
@@ -173,9 +173,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  backIcon: {
-    fontSize: 24,
-    color: colors.text.light,
+  backArrow: {
+    width: 0,
+    height: 0,
+    borderTopWidth: 8,
+    borderBottomWidth: 8,
+    borderRightWidth: 12,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: colors.text.light,
   },
   headerTitle: {
     fontSize: typography.fontSize.lg,
@@ -267,7 +273,10 @@ const styles = StyleSheet.create({
     marginTop: spacing['2xl'],
   },
   emptyIcon: {
-    fontSize: 64,
+    width: 64,
+    height: 64,
+    backgroundColor: colors.border.light,
+    borderRadius: 32,
     marginBottom: spacing.lg,
     opacity: 0.5,
   },

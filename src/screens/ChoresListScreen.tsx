@@ -18,6 +18,10 @@ import { FamilyStackParamList } from '../types';
 import { colors, typography, spacing } from '../theme';
 import Card from '../components/common/Card';
 import { useChores } from '../contexts/ChoresContext';
+import MenuIcon from '../components/icons/MenuIcon';
+import BellIcon from '../components/icons/BellIcon';
+import PlantIcon from '../components/icons/PlantIcon';
+import StarIcon from '../components/icons/StarIcon';
 
 type ChoresListNavigationProp = StackNavigationProp<FamilyStackParamList, 'ChoresList'>;
 
@@ -71,11 +75,11 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuButton}>
-          <Text style={styles.menuIcon}>☰</Text>
+          <MenuIcon color={colors.text.primary} size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Garden</Text>
         <TouchableOpacity style={styles.notificationButton}>
-          <Text style={styles.notificationIcon}>🔔</Text>
+          <BellIcon color={colors.text.primary} size={22} />
         </TouchableOpacity>
       </View>
 
@@ -147,7 +151,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                 <Card key={chore.id} style={styles.choreCard}>
                   <View style={styles.choreContent}>
                     <View style={styles.choreIcon}>
-                      <Text style={styles.choreIconText}>🌱</Text>
+                      <PlantIcon color="#4CAF50" size={20} />
                     </View>
                     
                     <View style={styles.choreInfo}>
@@ -162,7 +166,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                     </View>
                     
                     <View style={styles.chorePoints}>
-                      <Text style={styles.pointsIcon}>⭐</Text>
+                      <StarIcon color="#FFC107" size={14} filled={true} />
                       <Text style={styles.pointsText}>{chore.points}</Text>
                     </View>
                   </View>
@@ -171,7 +175,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
             })
           ) : (
             <Card style={styles.emptyState}>
-              <Text style={styles.emptyStateIcon}>🌿</Text>
+              <View style={styles.emptyStateIcon} />
               <Text style={styles.emptyStateText}>No tasks to {selectedStatus.toLowerCase()}</Text>
             </Card>
           )}
@@ -202,7 +206,7 @@ const ChoresListScreen: React.FC<Props> = ({ navigation }) => {
                   </View>
                 </View>
                 <View style={styles.progressPoints}>
-                  <Text style={styles.progressPointsIcon}>⭐</Text>
+                  <StarIcon color="#FFC107" size={12} filled={true} />
                   <Text style={styles.progressPointsText}>{child.totalPoints}</Text>
                 </View>
               </View>
@@ -241,10 +245,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuIcon: {
-    fontSize: 20,
-    color: colors.text.primary,
-  },
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
@@ -255,9 +255,6 @@ const styles = StyleSheet.create({
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  notificationIcon: {
-    fontSize: 20,
   },
   content: {
     flex: 1,
@@ -356,9 +353,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e8f5e8',
     borderRadius: 20,
   },
-  choreIconText: {
-    fontSize: 20, // Slightly smaller for better proportion
-  },
+
   choreInfo: {
     flex: 1,
   },
@@ -388,14 +383,11 @@ const styles = StyleSheet.create({
   chorePoints: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff3cd', // Light yellow background
+    backgroundColor: '#fff3cd',
     paddingHorizontal: spacing.sm,
     paddingVertical: spacing.xs,
     borderRadius: 12,
-  },
-  pointsIcon: {
-    fontSize: 14,
-    marginRight: 4,
+    gap: 4,
   },
   pointsText: {
     fontSize: typography.fontSize.sm,
@@ -416,7 +408,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   emptyStateIcon: {
-    fontSize: 48,
+    width: 48,
+    height: 48,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 24,
     marginBottom: spacing.md,
   },
   emptyStateText: {
@@ -476,10 +471,7 @@ const styles = StyleSheet.create({
   progressPoints: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  progressPointsIcon: {
-    fontSize: 16,
-    marginRight: 4,
+    gap: 4,
   },
   progressPointsText: {
     fontSize: typography.fontSize.base,

@@ -17,6 +17,9 @@ import { colors, typography, spacing } from '../theme';
 import Button from '../components/common/Button';
 import FamilyIllustration from '../components/common/FamilyIllustration';
 import { useLocale } from '../contexts/LocaleContext';
+import JournalIcon from '../components/icons/JournalIcon';
+import CalendarIcon from '../components/icons/CalendarIcon';
+import CheckIcon from '../components/icons/CheckIcon';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
 
@@ -79,15 +82,15 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
         {/* Feature preview */}
         <View style={styles.featurePreview}>
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📝</Text>
+            <JournalIcon color={colors.text.onPrimary} size={28} />
             <Text style={styles.featureLabel}>Journaling</Text>
           </View>
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>📅</Text>
+            <CalendarIcon color={colors.text.onPrimary} size={28} />
             <Text style={styles.featureLabel}>Calendar</Text>
           </View>
           <View style={styles.featureItem}>
-            <Text style={styles.featureIcon}>✅</Text>
+            <CheckIcon color={colors.text.onPrimary} size={28} />
             <Text style={styles.featureLabel}>To-Do Lists</Text>
           </View>
         </View>
@@ -191,10 +194,7 @@ const styles = StyleSheet.create({
   featureItem: {
     alignItems: 'center',
     flex: 1,
-  },
-  featureIcon: {
-    fontSize: 24,
-    marginBottom: spacing.xs,
+    gap: spacing.xs,
   },
   featureLabel: {
     fontSize: typography.fontSize.sm,

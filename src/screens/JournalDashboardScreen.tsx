@@ -21,6 +21,9 @@ import Button from '../components/common/Button';
 import { useJournal } from '../contexts/JournalContext';
 import { useLocale } from '../contexts/LocaleContext';
 import { moodColors } from '../constants/moods';
+import MenuIcon from '../components/icons/MenuIcon';
+import SettingsIcon from '../components/icons/SettingsIcon';
+import StarIcon from '../components/icons/StarIcon';
 
 type JournalDashboardNavigationProp = StackNavigationProp<JournalStackParamList, 'JournalDashboard'>;
 
@@ -114,11 +117,11 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuButton}>
-          <Text style={styles.menuIcon}>☰</Text>
+          <MenuIcon color={colors.text.onPrimary} size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Interactive Timeline</Text>
         <TouchableOpacity style={styles.settingsButton}>
-          <Text style={styles.settingsIcon}>⚙️</Text>
+          <SettingsIcon color={colors.text.onPrimary} size={22} />
         </TouchableOpacity>
       </View>
 
@@ -194,13 +197,13 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
         <View style={styles.milestonesContainer}>
           <Card style={styles.milestoneCard}>
             <View style={styles.milestoneContent}>
-              <Text style={styles.milestoneIcon}>🏆</Text>
+              <StarIcon color="#FFD700" size={20} filled={true} />
               <Text style={styles.milestoneText}>Celebrate small victories, like a new skill learned!</Text>
             </View>
           </Card>
           <Card style={styles.milestoneCard}>
             <View style={styles.milestoneContent}>
-              <Text style={styles.milestoneIcon}>⭐</Text>
+              <StarIcon color="#FFC107" size={20} filled={true} />
               <Text style={styles.milestoneText}>Document a funny family moment.</Text>
             </View>
           </Card>
@@ -234,10 +237,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  menuIcon: {
-    fontSize: 20,
-    color: colors.text.onPrimary,
-  },
+
   headerTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
@@ -249,9 +249,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  settingsIcon: {
-    fontSize: 20,
-  },
+
   content: {
     flex: 1,
     paddingHorizontal: spacing.lg,
@@ -436,10 +434,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: spacing.md,
   },
-  milestoneIcon: {
-    fontSize: 20,
-    marginTop: 2,
-  },
+
   milestoneText: {
     fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.medium,

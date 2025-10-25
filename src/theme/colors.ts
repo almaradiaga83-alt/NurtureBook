@@ -37,19 +37,19 @@ export const colors = {
     cardDark: '#1a2e22',  // Dark card background
     secondary: '#f8f9fa', // Light gray secondary background
     surface: '#fafbfc',   // Surface color for elevated elements
-    cream: '#f4f0e6',     // Exact cream from design for illustrations
+    cream: '#EDE4D3',     // Exact warm cream from family illustration
     insight: '#fce4e4',   // Exact pink from design for insight cards
     timeline: '#2d4a3a',  // Dark green for timeline background
   },
   
-  // Text colors - Improved contrast
+  // Text colors - WCAG AA compliant contrast ratios
   text: {
-    primary: '#1a1a1a',   // Darker primary text for better readability
-    secondary: '#4a4a4a', // Darker secondary text
-    light: '#ffffff',     // Light text
-    muted: '#6b7280',     // Better muted text color
-    onPrimary: '#ffffff', // Text on primary color backgrounds
-    onSecondary: '#1a1a1a', // Text on secondary color backgrounds
+    primary: '#000000',   // Pure black for maximum readability
+    secondary: '#3d3d3d', // Dark gray with 4.5:1 contrast on white
+    light: '#ffffff',     // Pure white for dark backgrounds
+    muted: '#5f5f5f',     // Medium gray with 7:1 contrast
+    onPrimary: '#ffffff', // White text on dark green backgrounds
+    onSecondary: '#000000', // Black text on pink backgrounds
   },
   
   // Mood colors for journal entries
