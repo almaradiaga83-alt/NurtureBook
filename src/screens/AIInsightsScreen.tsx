@@ -224,19 +224,26 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.main,
   },
   insightCard: {
-    backgroundColor: colors.background.insight,
+    backgroundColor: '#fce4e4', // Exact pink shade from design
     marginTop: spacing.lg,
+    borderRadius: 16,
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 3,
   },
   insightTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.primary.main,
+    color: colors.text.primary,
     marginBottom: spacing.sm,
+    lineHeight: 24,
   },
   insightDescription: {
     fontSize: typography.fontSize.base,
-    color: colors.text.primary,
-    lineHeight: typography.lineHeight.normal * typography.fontSize.base,
+    color: colors.text.secondary,
+    lineHeight: 22,
     marginBottom: spacing.md,
   },
   learnMoreContainer: {

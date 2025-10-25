@@ -273,11 +273,23 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
     marginRight: spacing.sm,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
     borderRadius: 20,
+    minWidth: 60,
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   filterChipActive: {
-    backgroundColor: colors.action.blue,
+    backgroundColor: '#2196f3', // Exact blue from design
+    shadowColor: colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
   },
   filterChipText: {
     fontSize: typography.fontSize.sm,
@@ -341,9 +353,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: spacing.md,
+    backgroundColor: '#e8f5e8',
+    borderRadius: 20,
   },
   choreIconText: {
-    fontSize: 24,
+    fontSize: 20, // Slightly smaller for better proportion
   },
   choreInfo: {
     flex: 1,
@@ -374,15 +388,19 @@ const styles = StyleSheet.create({
   chorePoints: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff3cd', // Light yellow background
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: 12,
   },
   pointsIcon: {
-    fontSize: 16,
-    marginRight: 2,
+    fontSize: 14,
+    marginRight: 4,
   },
   pointsText: {
-    fontSize: typography.fontSize.base,
+    fontSize: typography.fontSize.sm,
     fontWeight: typography.fontWeight.bold,
-    color: colors.text.primary,
+    color: '#856404', // Dark yellow text
   },
   sectionTitle: {
     fontSize: typography.fontSize.lg,

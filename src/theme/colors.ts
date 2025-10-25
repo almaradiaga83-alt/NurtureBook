@@ -18,13 +18,15 @@ export const colors = {
     light: '#f8c2c2',     // Lighter variant
     lighter: '#fce8e8',   // Even lighter variant
     dark: '#e88888',      // Darker variant
+    button: '#f4a5a5',    // Exact button color from design
   },
   
   // Garden/Mint colors for My Garden screen
   garden: {
-    background: '#e8f5e8', // Light mint green background
-    light: '#f0f9f0',      // Very light mint
+    background: '#e8f4e8', // Exact mint green from design
+    light: '#f0f8f0',      // Very light mint
     accent: '#c8e6c9',     // Mint accent
+    card: '#ffffff',       // White cards on mint background
   },
   
   // Background colors
@@ -35,8 +37,9 @@ export const colors = {
     cardDark: '#1a2e22',  // Dark card background
     secondary: '#f8f9fa', // Light gray secondary background
     surface: '#fafbfc',   // Surface color for elevated elements
-    cream: '#f5f1e8',     // Cream background for illustrations
-    insight: '#fce8e8',   // Pink background for insight cards
+    cream: '#f4f0e6',     // Exact cream from design for illustrations
+    insight: '#fce4e4',   // Exact pink from design for insight cards
+    timeline: '#2d4a3a',  // Dark green for timeline background
   },
   
   // Text colors - Improved contrast
@@ -95,9 +98,10 @@ export const colors = {
   
   // Action colors
   action: {
-    blue: '#2196f3',      // Blue FAB
+    blue: '#1976d2',      // Exact blue from design
     green: '#4caf50',     // Green buttons
     red: '#f44336',       // Red/coral for logout
+    filterActive: '#42a5f5', // Blue for active filter tabs
   },
 } as const;
 

@@ -37,7 +37,7 @@ const Input: React.FC<InputProps> = ({
     return {
       borderWidth: 2,
       borderColor: error ? colors.status.error : isFocused ? colors.primary.main : colors.border.light,
-      borderRadius: borderRadius.lg,
+      borderRadius: 16, // More rounded to match design
       paddingHorizontal: spacing.lg,
       paddingVertical: spacing.md,
       backgroundColor: colors.background.card,

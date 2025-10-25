@@ -145,10 +145,14 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.socialText}>Or continue with</Text>
             <View style={styles.socialContainer}>
               <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialIcon}>🍎</Text>
+                <View style={styles.appleIcon}>
+                  <Text style={styles.appleIconText}></Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.socialButton}>
-                <Text style={styles.socialIcon}>📘</Text>
+                <View style={styles.facebookIcon}>
+                  <Text style={styles.facebookIconText}>f</Text>
+                </View>
               </TouchableOpacity>
             </View>
 
@@ -276,8 +280,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  socialIcon: {
-    fontSize: 24,
+  appleIcon: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#000000',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  appleIconText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: typography.fontWeight.bold,
+  },
+  facebookIcon: {
+    width: 24,
+    height: 24,
+    backgroundColor: '#1877f2',
+    borderRadius: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  facebookIconText: {
+    fontSize: 16,
+    color: '#ffffff',
+    fontWeight: typography.fontWeight.bold,
   },
   guestButton: {
     backgroundColor: 'transparent',

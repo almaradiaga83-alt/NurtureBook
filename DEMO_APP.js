@@ -1,6 +1,6 @@
 /**
- * Welcome Screen
- * First screen users see when opening the app
+ * Simplified Demo App for Expo Snack
+ * Shows the redesigned Welcome Screen
  */
 
 import React from 'react';
@@ -8,38 +8,61 @@ import {
   View,
   Text,
   StyleSheet,
+  TouchableOpacity,
   SafeAreaView,
   StatusBar,
 } from 'react-native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types';
-import { colors, typography, spacing } from '../theme';
-import Button from '../components/common/Button';
-import FamilyIllustration from '../components/common/FamilyIllustration';
-import { useLocale } from '../contexts/LocaleContext';
 
-type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
+// Simplified theme with exact colors from design
+const colors = {
+  primary: { main: '#2d4a3a' },
+  secondary: { main: '#f4a5a5' },
+  background: { cream: '#f4f0e6' }, // Exact cream from design
+  text: { onPrimary: '#ffffff' },
+  shadow: 'rgba(0, 0, 0, 0.1)',
+};
 
-interface Props {
-  navigation: WelcomeScreenNavigationProp;
-}
+const spacing = { xs: 4, sm: 8, md: 16, lg: 24, xl: 32, '2xl': 48 };
+const typography = {
+  fontSize: { sm: 14, base: 16, lg: 18, '3xl': 24, '4xl': 32 },
+  fontWeight: { normal: '400', medium: '500', bold: '700' },
+};
 
-const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
-  const { t } = useLocale();
+// Simplified Button Component
+const Button = ({ title, onPress, variant = 'primary', style }) => {
+  const buttonStyle = [
+    styles.button,
+    variant === 'primary' ? styles.primaryButton : styles.outlineButton,
+    style,
+  ];
+  
+  const textStyle = [
+    styles.buttonText,
+    variant === 'primary' ? styles.primaryButtonText : styles.outlineButtonText,
+  ];
 
+  return (
+    <TouchableOpacity style={buttonStyle} onPress={onPress}>
+      <Text style={textStyle}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+// Main Demo App
+const DemoApp = () => {
   const handleGetStarted = () => {
-    navigation.navigate('Login');
+    alert('Get Started pressed! 🎉');
   };
 
   const handleLogIn = () => {
-    navigation.navigate('Login');
+    alert('Log In pressed! 🔐');
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor={colors.primary.main} />
       
-      {/* Header with app branding */}
+      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.brandName}>ParentApp</Text>
         <Text style={styles.demoLabel}>Demo Mode</Text>
@@ -49,13 +72,17 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
       <View style={styles.main}>
         {/* Family illustration card */}
         <View style={styles.illustrationCard}>
-          <FamilyIllustration />
+          <View style={styles.familyIllustration}>
+            <Text style={styles.familyEmoji}>👨‍👩‍👧‍👦</Text>
+          </View>
         </View>
 
         {/* Title and subtitle */}
         <View style={styles.textContainer}>
           <Text style={styles.title}>Simplify Your{'\n'}Parenting Journey</Text>
-          <Text style={styles.subtitle}>The all-in-one app for your family's{'\n'}memories and daily schedule.</Text>
+          <Text style={styles.subtitle}>
+            The all-in-one app for your family's{'\n'}memories and daily schedule.
+          </Text>
         </View>
 
         {/* Action buttons */}
@@ -63,16 +90,14 @@ const WelcomeScreen: React.FC<Props> = ({ navigation }) => {
           <Button
             title="Get Started"
             onPress={handleGetStarted}
-            variant="secondary"
-            size="large"
-            style={styles.primaryButton}
+            variant="primary"
+            style={styles.primaryButtonStyle}
           />
           <Button
             title="Log In"
             onPress={handleLogIn}
             variant="outline"
-            size="large"
-            style={styles.secondaryButton}
+            style={styles.secondaryButtonStyle}
           />
         </View>
 
@@ -102,15 +127,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary.main,
   },
   header: {
+    alignItems: 'center',
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.xl,
-    alignItems: 'center',
   },
   brandName: {
     fontSize: typography.fontSize['3xl'],
     fontWeight: typography.fontWeight.bold,
     color: colors.text.onPrimary,
-    fontFamily: typography.fontFamily.display,
   },
   demoLabel: {
     fontSize: typography.fontSize.sm,
@@ -142,27 +166,30 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-
+  familyIllustration: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  familyEmoji: {
+    fontSize: 120,
+  },
   textContainer: {
     alignItems: 'center',
     marginBottom: spacing['2xl'],
     paddingHorizontal: spacing.lg,
   },
   title: {
-    fontSize: 28, // Larger, bolder title
-    fontWeight: '800', // Extra bold
+    fontSize: typography.fontSize['4xl'],
+    fontWeight: typography.fontWeight.bold,
     color: colors.text.onPrimary,
     textAlign: 'center',
-    lineHeight: 34,
     marginBottom: spacing.md,
-    fontFamily: typography.fontFamily.display,
   },
   subtitle: {
     fontSize: typography.fontSize.base,
     fontWeight: typography.fontWeight.normal,
     color: colors.text.onPrimary,
     textAlign: 'center',
-    lineHeight: typography.lineHeight.normal * typography.fontSize.base,
     opacity: 0.9,
   },
   buttonContainer: {
@@ -171,10 +198,37 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     marginBottom: spacing['2xl'],
   },
+  button: {
+    borderRadius: 25,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: spacing['2xl'],
+    paddingVertical: spacing.lg,
+    minHeight: 56,
+  },
   primaryButton: {
     backgroundColor: colors.secondary.main,
   },
-  secondaryButton: {
+  outlineButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: colors.text.onPrimary,
+  },
+  buttonText: {
+    fontSize: typography.fontSize.lg,
+    fontWeight: typography.fontWeight.medium,
+    textAlign: 'center',
+  },
+  primaryButtonText: {
+    color: colors.text.onPrimary,
+  },
+  outlineButtonText: {
+    color: colors.text.onPrimary,
+  },
+  primaryButtonStyle: {
+    backgroundColor: colors.secondary.main,
+  },
+  secondaryButtonStyle: {
     borderColor: colors.text.onPrimary,
     backgroundColor: 'transparent',
   },
@@ -203,4 +257,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WelcomeScreen;
+export default DemoApp;

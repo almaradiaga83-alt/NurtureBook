@@ -274,11 +274,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   avatar: {
-    width: 128,
-    height: 128,
-    borderRadius: 64,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#f0f0f0', // Light gray for photo effect
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: themeColors.shadow,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+    borderWidth: 3,
+    borderColor: '#ffffff',
   },
   avatarText: {
     fontSize: typography.fontSize['4xl'],

@@ -218,7 +218,7 @@ const JournalDashboardScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primary.main,
+    backgroundColor: colors.background.timeline, // Use exact timeline background
   },
   header: {
     flexDirection: 'row',

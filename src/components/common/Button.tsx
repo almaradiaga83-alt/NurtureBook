@@ -54,11 +54,12 @@ const Button: React.FC<ButtonProps> = ({
   };
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: 25, // More rounded to match design
+      borderRadius: 28, // Even more rounded to match design exactly
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
       ...shadows.sm, // Add subtle shadow for depth
+      minHeight: 56, // Consistent button height
     };
 
     // Size styles
