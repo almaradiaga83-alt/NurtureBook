@@ -26,8 +26,10 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   familyImage: {
-    width: 200,
-    height: 200,
+    width: '80%',
+    height: '80%',
+    maxWidth: 180,
+    maxHeight: 180,
   },
 });
 

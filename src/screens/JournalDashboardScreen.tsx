@@ -231,14 +231,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    backgroundColor: colors.primary.main,
+    paddingVertical: spacing.lg,
+    backgroundColor: colors.background.timeline,
+    minHeight: 60,
   },
   menuButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 22,
   },
 
   headerCenter: {
@@ -258,10 +260,11 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   settingsButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 22,
   },
 
   content: {

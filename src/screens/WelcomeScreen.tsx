@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
   },
   brandName: {
     fontSize: typography.fontSize['3xl'],
@@ -134,8 +134,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   illustrationCard: {
-    width: 280,
-    height: 280,
+    width: '85%',
+    aspectRatio: 1,
+    maxWidth: 280,
     backgroundColor: colors.background.cream,
     borderRadius: 24,
     alignItems: 'center',
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing['2xl'],
     paddingHorizontal: spacing.lg,
+    width: '100%',
   },
   title: {
     fontSize: 28,
@@ -172,9 +174,10 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-    maxWidth: 480,
+    maxWidth: 320,
     gap: spacing.md,
     marginBottom: spacing['2xl'],
+    paddingHorizontal: spacing.md,
   },
   primaryButton: {
     backgroundColor: colors.secondary.main,

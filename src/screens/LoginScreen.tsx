@@ -210,8 +210,8 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   logo: {
-    width: 40,
-    height: 40,
+    width: 32,
+    height: 32,
   },
   brandName: {
     fontSize: typography.fontSize['3xl'],
@@ -220,9 +220,10 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.display,
   },
   content: {
-    maxWidth: 400,
+    maxWidth: 360,
     alignSelf: 'center',
     width: '100%',
+    paddingHorizontal: spacing.md,
   },
   title: {
     fontSize: typography.fontSize['4xl'],
