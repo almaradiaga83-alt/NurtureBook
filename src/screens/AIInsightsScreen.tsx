@@ -22,6 +22,7 @@ import Button from '../components/common/Button';
 import { useLocale } from '../contexts/LocaleContext';
 import { getMockInsights } from '../services/aiInsights';
 import { AIInsight } from '../types';
+import SparkleIcon from '../components/icons/SparkleIcon';
 
 type AIInsightsNavigationProp = StackNavigationProp<JournalStackParamList, 'AIInsights'>;
 
@@ -144,7 +145,7 @@ const AIInsightsScreen: React.FC<Props> = ({ navigation }) => {
           ))
         ) : (
           <Card style={styles.emptyCard}>
-            <View style={styles.emptyIcon} />
+            <SparkleIcon color={colors.secondary.main} size={64} />
             <Text style={styles.emptyTitle}>{t('insights.noInsights')}</Text>
             <Text style={styles.emptySubtitle}>{t('insights.checkBack')}</Text>
           </Card>
@@ -272,14 +273,7 @@ const styles = StyleSheet.create({
     paddingVertical: spacing['3xl'],
     marginTop: spacing['2xl'],
   },
-  emptyIcon: {
-    width: 64,
-    height: 64,
-    backgroundColor: colors.border.light,
-    borderRadius: 32,
-    marginBottom: spacing.lg,
-    opacity: 0.5,
-  },
+
   emptyTitle: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.semibold,

@@ -6,3 +6,4 @@ export { default as SettingsIcon } from './SettingsIcon';
 export { default as CheckIcon } from './CheckIcon';
 export { default as CalendarIcon } from './CalendarIcon';
 export { default as JournalIcon } from './JournalIcon';
+export { default as SparkleIcon } from './SparkleIcon';

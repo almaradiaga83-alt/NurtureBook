@@ -126,16 +126,16 @@ const Button: React.FC<ButtonProps> = ({
       },
     };
 
-    // Variant styles with better contrast
+    // Variant styles with proper contrast
     const variantStyles: Record<string, TextStyle> = {
       primary: {
-        color: colors.text.onPrimary,
+        color: colors.text.light, // White text on dark green
       },
       secondary: {
-        color: colors.text.onSecondary,
+        color: colors.text.light, // White text on pink
       },
       outline: {
-        color: colors.primary.main,
+        color: colors.text.light, // White text for outline on dark background
       },
     };
 
